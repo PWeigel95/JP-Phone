@@ -2,3 +2,7 @@ small {
     color: #e74c3c;
     visibility: hidden;
 }
+
+.product-image {
+    padding: 16px;
+}
