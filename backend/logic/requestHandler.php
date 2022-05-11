@@ -12,7 +12,7 @@ class BusinessLogic{
     function handleRequest($method, $param){
         switch($method){
             case "createUser":
-                $res = $this->dh->createUser();
+                $res = $this->dh->createUser($param);
                 break;
         }
         return $res;
