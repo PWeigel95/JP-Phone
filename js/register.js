@@ -19,8 +19,8 @@ $(document).ready(function() {
         $.ajax({
             type: "post",
             dataType: "json",
-            url: "../",
-            data: userData,
+            url: "./backend/serviceHandler.php",
+            data: { method: "createUser", param: userData },
             success: function(response) {
                 console.log(data);
             },

@@ -2,8 +2,9 @@
 
 class Datahandler{
 
-    public function createUser(){
+    public function createUser($userdata){
         return "";
+        
     }
     
 }
