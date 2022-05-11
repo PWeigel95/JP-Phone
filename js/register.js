@@ -1,4 +1,4 @@
-$(function() {
+$(document).ready(function() {
     $("#btnCreateUser").on("click", function() {
         checkInput();
         divResult.empty();
@@ -8,19 +8,17 @@ $(function() {
             url: apiPath + "?user",
             data: $("#txtCreateUser").val(),
             success: function(response) {
-                divResult.text(JSON.stringify(response, undefined, 2));
+                console.log("Success");
             },
             error: function(xhr, ajaxOptions, thrownError) {
-                divResult.text("Error:\n" + JSON.stringify(xhr, undefined, 2));
+                console.log("error");
             }
         });
     });
 
     function checkInput() {
+        console.log("CheckInput");
 
     }
 
-
-
-
-})
+});
