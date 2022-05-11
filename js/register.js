@@ -1,6 +1,5 @@
 $(document).ready(function() {
     $("#btnCreateUser").on("click", function() {
-
         var anrede = $("#anrede").val();
         var vorname = $("#vorname").val();
         var nachname = $("#nachname").val();
@@ -13,34 +12,32 @@ $(document).ready(function() {
         var repeatpassword = $("#repeatpassword").val();
         var zahlungsinformationen = $("#zahlungsinformationen").val();
 
-        //checkInput();
+        if (checkInput()) {
+            var userData = {};
+            userData = {
+                anrede: anrede,
+                vorname: vorname,
+                nachname: nachname,
+                adresse: adresse,
+                plz: plz,
+                ort: ort,
+                email: email,
+                username: username,
+                password: password,
+                zahlungsinformationen: zahlungsinformationen
+            };
 
-        var userData = {};
-        userData = {
-            anrede: anrede,
-            vorname: vorname,
-            nachname: nachname,
-            adresse: adresse,
-            plz: plz,
-            ort: ort,
-            email: email,
-            username: username,
-            password: password,
-            zahlungsinformationen: zahlungsinformationen
-        };
+            $.each(userData, function(key, value) {
+                console.log(key + value);
+            })
 
-        $.each(userData, function(key, value) {
-            console.log(key + value);
-        })
+            createUser(userData);
 
-        createUser(userData);
-
-
-
-
+        }
     });
 
     function checkInput() {
+        return true;
 
     }
 
