@@ -15,7 +15,7 @@
 <body>
     <div class="container py-4">
         <h1 class="py-4">User-Registrierung</h1>
-        <form name="register" method="POST" action="index.php?menu=createuser">
+        <form name="register" method="POST" onSubmit="return checkInput()">
             <div class="form-group mb-2">
                 <label for="anrede">Anrede</label>
                 <select id="anrede" name="anrede" class="form-select">
@@ -75,7 +75,7 @@
                     <option value="bankomatkarte">Bankomatkarte</option>
                 </select><br>
             </div>
-            <button class="btn btn-primary" id="createUser" type=" submit ">Benutzer registrieren</button>
+            <button class="btn btn-primary" id="btnCreateUser" type="submit">Benutzer registrieren</button>
         </form>
     </div>
 

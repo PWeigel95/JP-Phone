@@ -1,14 +1,13 @@
 $(document).ready(function() {
     $("#btnCreateUser").on("click", function() {
         checkInput();
-        divResult.empty();
         $.ajax({
             type: "post",
             dataType: "json",
-            url: apiPath + "?user",
-            data: $("#txtCreateUser").val(),
+            url: "../",
+            data: $("input").val(),
             success: function(response) {
-                console.log("Success");
+                console.log(data);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 console.log("error");
