@@ -1,8 +1,6 @@
 <?php 
 
-//benötigt für den Datenbankzugriff
-require_once "../config/dbaccess.php";
-include("datahandler.php");
+include("./config/datahandler.php");
 
 class BusinessLogic{
     
