@@ -1,17 +1,21 @@
 $(document).ready(function() {
     $("#btnCreateUser").on("click", function() {
-        checkInput();
         var userData = {};
-        /*
-        $("form#form_register :input").each(function() {
-            var input = $(this); // This is the jquery object of the input, do what you will
-            console.log(input);
-        });*/
-        //createUser();
+        //checkInput();
+        var anrede = $("#anrede").val();
+        var vorname = $("#vorname").val();
+
+        userData = { anrede: anrede, vorname: vorname };
+
+        alert(userData);
+
+
+
+
     });
 
     function checkInput() {
-        console.log("CheckInput");
+        alert("CheckInput");
 
     }
 

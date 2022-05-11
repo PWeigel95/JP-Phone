@@ -1,9 +1,11 @@
 <?php
 
+include ("dbaccess.php");
+
 class Datahandler{
 
     public function createUser($userdata){
-        return "";
+        echo ($userdata);
         
     }
     
