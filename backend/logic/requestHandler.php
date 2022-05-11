@@ -2,18 +2,23 @@
 
 //benötigt für den Datenbankzugriff
 require_once "../config/dbaccess.php";
+include("datahandler.php");
 
+class BusinessLogic{
+    
+    private $dh;
+    function __construct(){
+        $this->dh = new Datahandler();
+    }
 
-function createUser(){ 
-    /*
-    $db_obj = new mysqli($servername, $username, $password, $dbname);
-
-    $sql = "INSERT INTO `users`(`username`, `password`, `email`, `role_id`,`u_status`, `anrede`,`fname`,`lname`) VALUES (?, ?, ?, ?, ?,?,?,?)";
-
-    $stmt = $db_obj->prepare($sql);
-
-    $stmt->bind_param("sssiisss", $uname, $pass, $mail, $role_id, $u_status, $anrede, $fname, $lname);
-    */
-} 
+    function handleRequest($method, $param){
+        switch($method){
+            case "createUser":
+                $res = $this->dh->createUser();
+                break;
+        }
+        return $res;
+    }
+}
 
 ?>
