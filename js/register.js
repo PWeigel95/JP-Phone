@@ -1,11 +1,26 @@
 $(document).ready(function() {
     $("#btnCreateUser").on("click", function() {
         checkInput();
+        var userData = {};
+        /*
+        $("form#form_register :input").each(function() {
+            var input = $(this); // This is the jquery object of the input, do what you will
+            console.log(input);
+        });*/
+        //createUser();
+    });
+
+    function checkInput() {
+        console.log("CheckInput");
+
+    }
+
+    function createUser(userData) {
         $.ajax({
             type: "post",
             dataType: "json",
             url: "../",
-            data: $("input").val(),
+            data: userData,
             success: function(response) {
                 console.log(data);
             },
@@ -13,10 +28,6 @@ $(document).ready(function() {
                 console.log("error");
             }
         });
-    });
-
-    function checkInput() {
-        console.log("CheckInput");
 
     }
 
