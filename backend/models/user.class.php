@@ -1,6 +1,6 @@
 <?php
 class User {
-    public $id;
+    //public $id;
     public $anrede;
     public $vorname;
     public $nachname;
@@ -15,9 +15,9 @@ class User {
     public $user_status;
     public $erstellungsdatum;
 
-    function __construct($id, $anrede, $vorname, $nachname, $adresse, $plz, $ort,$email,
+    function __construct(/*$id,*/ $anrede, $vorname, $nachname, $adresse, $plz, $ort,$email,
     $benutzername, $passwort, $zahlungsinformation, $role_id,  $user_status, $erstellungsdatum) {
-        $this->id = $id;
+        //$this->id = $id;
         $this->anrede = $anrede;
         $this->vorname=$vorname;
         $this->nachname=$nachname;

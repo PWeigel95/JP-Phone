@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    $("#form_register").submit(function() {
+    $("#form_register").submit(function(event) {
+        event.preventDefault();
         var anrede = $("#anrede").val();
         var vorname = $("#vorname").val();
         var nachname = $("#nachname").val();
@@ -43,12 +44,12 @@ $(document).ready(function() {
 
     function createUser(userData) {
         $.ajax({
-            type: "post",
-            dataType: "json",
+            method: "post",
+            datatype: "json",
             url: "./backend/logic/requestHandler.php",
-            data: userData,
-            success: function(response) {
-                alert(response);
+            data: JSON.stringify(userData),
+            success: function(newUser) {
+                alert(newUser);
 
             },
             error: function(xhr, ajaxOptions, thrownError) {

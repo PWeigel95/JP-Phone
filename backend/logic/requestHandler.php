@@ -1,8 +1,6 @@
 <?php 
 
-echo '<script>alert("Welcome to Geeks for Geeks")</script>';
-
-include("./config/datahandler.php");
+include("../config/datahandler.php");
 
 $businessLogic = new BusinessLogic();
 $businessLogic->processRequest();
@@ -30,11 +28,12 @@ class BusinessLogic{
     }
 
     function processPost(){
-        $data = json_decode(file_get_contents('php://input'));
-        echo '<script>';
-        echo 'HAT funktioniert';
-        //echo 'console.log('. $data.')';
-        echo '</script>';
+        $data = json_decode(file_get_contents("php://input"));
+
+        echo $data->email;
+
+        //$user = new User()
+        
     }
 
 }
