@@ -1,6 +1,12 @@
 <?php 
 
+echo '<script>alert("Welcome to Geeks for Geeks")</script>';
+
 include("./config/datahandler.php");
+
+$businessLogic = new BusinessLogic();
+$businessLogic->processRequest();
+
 
 class BusinessLogic{
     
@@ -9,14 +15,28 @@ class BusinessLogic{
         $this->dh = new Datahandler();
     }
 
-    function handleRequest($method, $param){
-        switch($method){
-            case "createUser":
-                $res = $this->dh->createUser($param);
+    public function processRequest(){
+        $method = $_SERVER['REQUEST_METHOD'];
+        switch ($method){
+            case "GET":
+                echo "GET METHOD started";
                 break;
+            case "POST":
+                $this->processPost();
+                break;
+            default:
+                echo "Method not found";
         }
-        return $res;
     }
+
+    function processPost(){
+        $data = json_decode(file_get_contents('php://input'));
+        echo '<script>';
+        echo 'HAT funktioniert';
+        //echo 'console.log('. $data.')';
+        echo '</script>';
+    }
+
 }
 
 ?>
