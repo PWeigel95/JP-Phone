@@ -22,12 +22,12 @@ class User {
         $this->vorname=$vorname;
         $this->nachname=$nachname;
         $this->adresse=$adresse;
-        $this->departmentplz=$plz;
+        $this->plz=$plz;
         $this->ort=$ort;
         $this->email=$email;
         $this->benutzername=$benutzername;
         $this->passwort=$passwort;
-        $this->zahlungsinformation=$zahlungsinformation_id;
+        $this->zahlungsinformation_id=$zahlungsinformation_id;
         $this->role_id=$role_id;
         $this->user_status=$user_status;
         $this->erstellungsdatum=$erstellungsdatum;

@@ -50,7 +50,7 @@ $(document).ready(function() {
             url: "./backend/logic/requestHandler.php",
             data: JSON.stringify(userData),
             success: function(newUser) {
-                alert(newUser);
+                alert("New User created!" + newUser);
 
             },
             error: function(xhr, ajaxOptions, thrownError) {

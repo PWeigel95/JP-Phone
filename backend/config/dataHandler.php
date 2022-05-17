@@ -22,8 +22,6 @@ class Datahandler{
         echo "user_status: " .$userdata->user_status;
         */
 
-        
-
         $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `user_status`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
         $stmt->bind_param("sssssssssiii", 
@@ -41,15 +39,22 @@ class Datahandler{
         $userdata->user_status);
 
         if($stmt->execute()){
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
             return true;
+        }
+        else{
+            echo htmlspecialchars($stmt->error);
+            //close the statement
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return false;
             
         }
-        else return false;
+        
 
-        //close the statement
-        $stmt->close();
-        //close the connection
-        $db_obj->close();
     }
     
 }
