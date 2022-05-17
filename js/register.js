@@ -45,9 +45,9 @@ $(document).ready(function() {
 
     function createUser(userData) {
         $.ajax({
-            method: "post",
+            method: "POST",
             datatype: "json",
-            url: "./backend/logic/requestHandler.php",
+            url: "backend/index.php?action=register",
             data: JSON.stringify(userData),
             success: function() {
                 alert("New User created!");

@@ -1,10 +1,49 @@
 <?php
 
+require_once("./models/product.class.php");
+
 class Datahandler{
 
+    private function getDb() {
+        // Creates a new mysqli connection and returns it
+        include("./config/dbaccess.php");
+        return new mysqli($servername, $username, $password, $dbname);
+    }
+
+    public function getProducts() {
+        // Prepare the array we will return in the end:
+        $products = array();
+        
+        // connect to mysql:
+        $db_obj = $this->getDb();
+
+        // run the query
+        $query = "SELECT product_id, name, price, description, image_url FROM products ORDER BY product_id ASC";
+        $result = $db_obj->query($query);
+
+        // loop through all results
+        while ($row = $result->fetch_assoc()) {
+            // convert it into a Product instance
+            $product = new Product(
+                $row['product_id'],
+                $row['name'],
+                $row['price'],
+                $row['description'],
+                $row['image_url']
+            );
+            // and add it to the array
+            array_push($products, $product);
+        }
+        
+        // close the connection
+        $db_obj->close();
+
+        // finally return all products
+        return $products;
+    }
+
     public function createUser($userdata){
-        include ("dbaccess.php");
-        $db_obj = new mysqli($servername, $username, $password, $dbname);
+        $db_obj = $this->getDb();
 
 
         /*

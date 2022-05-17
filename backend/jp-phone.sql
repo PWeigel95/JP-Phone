@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 17. Mai 2022 um 15:10
+-- Erstellungszeit: 17. Mai 2022 um 23:48
 -- Server-Version: 10.4.21-MariaDB
--- PHP-Version: 8.0.10
+-- PHP-Version: 8.0.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `jp-phone`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `products`
+--
+
+CREATE TABLE `products` (
+  `product_id` int(11) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `description` text NOT NULL,
+  `image_url` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `products`
+--
+
+INSERT INTO `products` (`product_id`, `name`, `price`, `description`, `image_url`) VALUES
+(1, 'Apple iPhone 11', '699.00', 'Apple iPhone 11', 'res/img/products/Apple iPhone 11.png'),
+(2, 'Apple iPhone 12', '849.00', 'Apple iPhone 12', 'res/img/products/Apple iPhone 11.png'),
+(3, 'Apple iPhone 13', '1049.00', 'Apple iPhone 13', 'res/img/products/Apple iPhone 11.png');
 
 -- --------------------------------------------------------
 
@@ -86,6 +109,12 @@ INSERT INTO `users` (`user_id`, `anrede`, `email`, `vorname`, `nachname`, `adres
 --
 
 --
+-- Indizes für die Tabelle `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`product_id`);
+
+--
 -- Indizes für die Tabelle `roles`
 --
 ALTER TABLE `roles`
@@ -100,6 +129,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT für exportierte Tabellen
 --
+
+--
+-- AUTO_INCREMENT für Tabelle `products`
+--
+ALTER TABLE `products`
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `roles`

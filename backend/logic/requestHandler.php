@@ -1,7 +1,7 @@
 <?php 
 
-include("../config/datahandler.php");
-include("../models/user.class.php");
+require_once("./config/datahandler.php");
+require_once("./models/user.class.php");
 
 $businessLogic = new BusinessLogic();
 $businessLogic->processRequest();
@@ -15,10 +15,12 @@ class BusinessLogic{
     }
 
     public function processRequest(){
+        // processes all requests
+
         $method = $_SERVER['REQUEST_METHOD'];
         switch ($method){
             case "GET":
-                echo "GET METHOD started";
+                $this->processGet();
                 break;
             case "POST":
                 $this->processPost();
@@ -28,9 +30,44 @@ class BusinessLogic{
         }
     }
 
+    function processGet(){
+        // processes GET requests to backend?resource=XYZ
+
+        if (!isset($_GET['resource'])) {
+            $this->error(400, [], "Bad Request - no resource");
+        }
+        switch ($_GET['resource']) {
+            case "products":
+                $this->processGetProducts();
+                break;
+            default:
+                echo "Resource not found";
+        }
+    }
+
     function processPost(){
+        // processes POST requests to backend?action=XYZ
+        
+        if (!isset($_GET['action'])) {
+            $this->error(400, [], "Bad Request - no action");
+        }
+
         $data = json_decode(file_get_contents("php://input"));
 
+        switch ($_GET['action']) {
+            case "register":
+                $this->processRegister($data);
+                break;
+            default:
+                echo "Action not found";
+        }
+    }
+
+    function processGetProducts() {
+        $this->success(200, $this->dh->getProducts());
+    }
+
+    function processRegister($data) {
         /*
         echo "Anrede: " .$data->anrede;
         echo "vorname: " .$data->vorname;
@@ -70,7 +107,6 @@ class BusinessLogic{
 
         // status code 201 = "created"
         $this->success(201, $result);
-        
     }
 
     private function success(int $code, $obj) {
