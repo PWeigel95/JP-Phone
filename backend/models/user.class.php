@@ -10,13 +10,13 @@ class User {
     public $email;
     public $benutzername;
     public $passwort;
-    public $zahlungsinformation;
+    public $zahlungsinformation_id;
     public $role_id;
     public $user_status;
     public $erstellungsdatum;
 
     function __construct(/*$id,*/ $anrede, $vorname, $nachname, $adresse, $plz, $ort,$email,
-    $benutzername, $passwort, $zahlungsinformation, $role_id,  $user_status, $erstellungsdatum) {
+    $benutzername, $passwort, $zahlungsinformation_id, $role_id,  $user_status, $erstellungsdatum) {
         //$this->id = $id;
         $this->anrede = $anrede;
         $this->vorname=$vorname;
@@ -27,7 +27,7 @@ class User {
         $this->email=$email;
         $this->benutzername=$benutzername;
         $this->passwort=$passwort;
-        $this->zahlungsinformation=$zahlungsinformation;
+        $this->zahlungsinformation=$zahlungsinformation_id;
         $this->role_id=$role_id;
         $this->user_status=$user_status;
         $this->erstellungsdatum=$erstellungsdatum;

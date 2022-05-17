@@ -8,10 +8,10 @@ $(document).ready(function() {
         var plz = $("#plz").val();
         var ort = $("#ort").val();
         var email = $("#email").val();
-        var username = $("#username").val();
-        var password = $("#password").val();
+        var benutzername = $("#benutzername").val();
+        var passwort = $("#passwort").val();
         var repeatpassword = $("#repeatpassword").val();
-        var zahlungsinformationen = $("#zahlungsinformationen").val();
+        var zahlungsinformation_id = $("#zahlungsinformationen option:selected").val();
 
         if (checkInput()) {
             var userData = {};
@@ -23,14 +23,15 @@ $(document).ready(function() {
                 plz: plz,
                 ort: ort,
                 email: email,
-                username: username,
-                password: password,
-                zahlungsinformationen: zahlungsinformationen
+                benutzername: benutzername,
+                passwort: passwort,
+                zahlungsinformation_id: zahlungsinformation_id
             };
-
+            /*
             $.each(userData, function(key, value) {
                 console.log(key + value);
             })
+            */
 
             createUser(userData);
 
