@@ -49,8 +49,9 @@ $(document).ready(function() {
             datatype: "json",
             url: "./backend/logic/requestHandler.php",
             data: JSON.stringify(userData),
-            success: function(newUser) {
-                alert("New User created!" + newUser);
+            success: function() {
+                alert("New User created!");
+                location.href = "./login.html";
 
             },
             error: function(xhr, ajaxOptions, thrownError) {
