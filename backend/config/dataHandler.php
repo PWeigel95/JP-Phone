@@ -42,6 +42,53 @@ class Datahandler{
         return $products;
     }
 
+    public function getUser($loginData){
+
+        // connect to mysql:
+        $db_obj = $this->getDb();
+
+        // run the query
+        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `user_status`, `role_id`  from `users` where `benutzername` = ?";
+        $stmt = $db_obj->prepare($sql);
+
+        $stmt->bind_param("s", $loginData->benutzername);
+
+        $stmt->execute();
+
+        $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $user_status,$role_id);
+
+        if ($stmt->execute()) {
+
+            if ($stmt->fetch()) {
+                //Überprüfe, ob das eingebene Passwort mit dem Passwort aus der Datenbank übereinstimmt
+                $isPasswordCorrect = password_verify($loginData->passwort, $aktuellesPassword);
+
+                if ($isPasswordCorrect && $user_status == 1) {
+                    /*
+                    $_SESSION["user_id"] = $userid;
+                    $_SESSION["username"] = $username;
+                    $_SESSION["role_id"] = $role_id;
+    
+                    setCookie("user_id", $userid);
+                    setCookie("username", $username);
+                    setCookie("role_id", $role_id);*/
+    
+                    return true;
+                }
+                //Falls die Passwörter nicht übereinstimmen sollten
+                else if (!$isPasswordCorrect) {
+                    $login_error = "Wrong username/password";
+                    return false;
+                }
+                //Falls der User nicht "aktiv" ist
+                else if ($user_status != 1) {
+                    $login_error =  "User is inactive! Please contact the system administrator";
+                    return false;
+                }
+            }
+        }
+    }
+
     public function createUser($userdata){
         $db_obj = $this->getDb();
 

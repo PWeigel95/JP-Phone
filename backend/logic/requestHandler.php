@@ -1,7 +1,7 @@
 <?php 
 
-require_once("./config/datahandler.php");
-require_once("./models/user.class.php");
+require_once("../config/datahandler.php");
+require_once("../models/user.class.php");
 
 $businessLogic = new BusinessLogic();
 $businessLogic->processRequest();
@@ -15,6 +15,7 @@ class BusinessLogic{
     }
 
     public function processRequest(){
+        echo htmlspecialchars("TEST") ;
         // processes all requests
 
         $method = $_SERVER['REQUEST_METHOD'];
@@ -54,9 +55,13 @@ class BusinessLogic{
 
         $data = json_decode(file_get_contents("php://input"));
 
+
         switch ($_GET['action']) {
             case "register":
                 $this->processRegister($data);
+                break;
+            case "login":
+                $this->processLogin($data);
                 break;
             default:
                 echo "Action not found";
@@ -66,6 +71,22 @@ class BusinessLogic{
     function processGetProducts() {
         $this->success(200, $this->dh->getProducts());
     }
+
+    function processLogin($loginData){
+
+        // check json data
+        if(!isset($loginData->username) || !isset($loginData->passwort) || !isset($loginData->loginChecked)){
+            $this->error(400, [], "Bad Request - username, passwort, loginChecked are required!");
+        }
+
+        if (($result = $this->dh->getUser($loginData)) === false) {
+            $this->error(400, [], "Bad Request - error logging in ");
+        }
+
+        // status code 201 = "login successful"
+        $this->success(201, $result);
+    }
+    
 
     function processRegister($data) {
         /*

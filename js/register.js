@@ -1,5 +1,9 @@
 $(document).ready(function() {
+
+    let apiPath = "./backend/logic/requestHandler.php"
+
     $("#form_register").submit(function(event) {
+
         event.preventDefault();
         var anrede = $("#anrede").val();
         var vorname = $("#vorname").val();
@@ -47,7 +51,7 @@ $(document).ready(function() {
         $.ajax({
             method: "POST",
             datatype: "json",
-            url: "backend/index.php?action=register",
+            url: apiPath + "?action=register",
             data: JSON.stringify(userData),
             success: function() {
                 alert("New User created!");
