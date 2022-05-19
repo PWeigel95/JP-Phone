@@ -88,18 +88,6 @@ class BusinessLogic{
     
 
     function processRegister($data) {
-        /*
-        echo "Anrede: " .$data->anrede;
-        echo "vorname: " .$data->vorname;
-        echo "nachname: " .$data->nachname;
-        echo "adresse: " .$data->adresse;
-        echo "plz: " .$data->plz;
-        echo "ort: " .$data->ort;
-        echo "email: " .$data->email;
-        echo "benutzername: " .$data->benutzername;
-        echo "passwort: " .$data->passwort;
-        echo "zahlungsinformation_id: " .$data->zahlungsinformation_id;
-        */
 
         // check json data
         if(!isset($data->anrede) || !isset($data->vorname) 

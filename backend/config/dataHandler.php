@@ -44,18 +44,21 @@ class Datahandler{
 
     public function getUser($loginData){
 
+        $user = array();
+       
+
         // connect to mysql:
         $db_obj = $this->getDb();
 
         // run the query
-        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `user_status`, `role_id`  from `users` where `benutzername` = ?";
+        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `user_status`, `role_id`, `erstellungsdatum`   from `users` where `benutzername` = ?";
         $stmt = $db_obj->prepare($sql);
 
         $stmt->bind_param("s", $loginData->benutzername);
 
         $stmt->execute();
 
-        $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $user_status,$role_id);
+        $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $anrede, $email, $vorname, $nachname, $adresse, $plz, $ort, $zahlungsinformation_id, $user_status,$role_id, $erstellungsdatum);
 
         if ($stmt->execute()) {
 
@@ -64,16 +67,20 @@ class Datahandler{
                 $isPasswordCorrect = password_verify($loginData->passwort, $aktuellesPassword);
 
                 if ($isPasswordCorrect && $user_status == 1) {
-                    /*
-                    $_SESSION["user_id"] = $userid;
-                    $_SESSION["username"] = $username;
-                    $_SESSION["role_id"] = $role_id;
+
+                    session_start();
+
+                    $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername, $aktuellesPassword, $zahlungsinformation_id, $role_id, $user_status, $erstellungsdatum);
+
+                    $_SESSION["user_id"] = $user_id;
+                    $_SESSION["benutzername"] = $benutzername;    
+
+                    if($loginData->loginChecked){
+                        setCookie("user_id", $user_id);
+                        setCookie("benutzername", $benutzername);                        
+                    }
     
-                    setCookie("user_id", $userid);
-                    setCookie("username", $username);
-                    setCookie("role_id", $role_id);*/
-    
-                    return true;
+                    return $user;
                 }
                 //Falls die Passwörter nicht übereinstimmen sollten
                 else if (!$isPasswordCorrect) {
@@ -108,9 +115,9 @@ class Datahandler{
         echo "user_status: " .$userdata->user_status;
         */
 
-        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `user_status`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `user_status`, `erstellungsdatum`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
-        $stmt->bind_param("sssssssssiii", 
+        $stmt->bind_param("sssssssssiiis", 
         $userdata->anrede, 
         $userdata->vorname, 
         $userdata->nachname, 
@@ -122,7 +129,8 @@ class Datahandler{
         $userdata->passwort,
         $userdata->zahlungsinformation_id,
         $userdata->role_id,
-        $userdata->user_status);
+        $userdata->user_status,
+        $userdata->erstellungsdatum);
 
         if($stmt->execute()){
             $stmt->close();

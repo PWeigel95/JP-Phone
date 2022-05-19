@@ -30,7 +30,8 @@ $(document).ready(function() {
             dataType: "json", // We know we want JSON data
             data: JSON.stringify(loginData),
             success: function(data) {
-                console.log("Login successfull");
+                alert("Login successful!");
+                location.href = "./login.html";
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 console.log(JSON.stringify(xhr));
