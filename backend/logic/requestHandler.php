@@ -15,7 +15,6 @@ class BusinessLogic{
     }
 
     public function processRequest(){
-        echo htmlspecialchars("TEST") ;
         // processes all requests
 
         $method = $_SERVER['REQUEST_METHOD'];
