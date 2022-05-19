@@ -73,9 +73,8 @@ class BusinessLogic{
     }
 
     function processLogin($loginData){
-
         // check json data
-        if(!isset($loginData->username) || !isset($loginData->passwort) || !isset($loginData->loginChecked)){
+        if(!isset($loginData->benutzername) || !isset($loginData->passwort) || !isset($loginData->loginChecked)){
             $this->error(400, [], "Bad Request - username, passwort, loginChecked are required!");
         }
 

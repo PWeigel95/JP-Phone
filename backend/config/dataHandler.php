@@ -1,12 +1,12 @@
 <?php
 
-require_once("./models/product.class.php");
+require_once("../models/product.class.php");
 
 class Datahandler{
 
     private function getDb() {
         // Creates a new mysqli connection and returns it
-        include("./config/dbaccess.php");
+        include("../config/dbaccess.php");
         return new mysqli($servername, $username, $password, $dbname);
     }
 
