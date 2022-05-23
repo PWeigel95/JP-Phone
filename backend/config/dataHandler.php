@@ -1,13 +1,25 @@
 <?php
 
-require_once("../models/product.class.php");
+require_once("./models/product.class.php");
 
 class Datahandler{
 
     private function getDb() {
         // Creates a new mysqli connection and returns it
-        include("../config/dbaccess.php");
-        return new mysqli($servername, $username, $password, $dbname);
+        include("./config/dbaccess.php");
+        $mysqli = new mysqli($servername, $username, $password, $dbname);
+        if ($mysqli->connect_errno) {
+            printf("Connect failed: %s\n", $mysqli->connect_error);
+            exit();
+        }
+        return $mysqli;
+    }
+
+    private function handleError($db_obj) {
+        if ($db_obj->error) {
+            printf("Error message: %s\n", $db_obj->error);
+            exit();
+        }
     }
 
     public function getProducts() {
@@ -20,6 +32,7 @@ class Datahandler{
         // run the query
         $query = "SELECT product_id, name, price, description, image_url FROM products ORDER BY product_id ASC";
         $result = $db_obj->query($query);
+        if (!$result) $this->handleError($db_obj);
 
         // loop through all results
         while ($row = $result->fetch_assoc()) {
@@ -53,6 +66,7 @@ class Datahandler{
         // run the query
         $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `user_status`, `role_id`, `erstellungsdatum`   from `users` where `benutzername` = ?";
         $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
 
         $stmt->bind_param("s", $loginData->benutzername);
 
@@ -117,6 +131,8 @@ class Datahandler{
 
         $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `user_status`, `erstellungsdatum`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
         $stmt->bind_param("sssssssssiiis", 
         $userdata->anrede, 
         $userdata->vorname, 

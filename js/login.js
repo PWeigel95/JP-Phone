@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    let apiPath = "./backend/logic/requestHandler.php"
+    let apiPath = "./backend/index.php"
 
     $("#btnLoginUser").on("click", function(event) {
 

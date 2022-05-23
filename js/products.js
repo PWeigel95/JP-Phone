@@ -34,10 +34,13 @@ function setProducts(products) {
 }
 
 $(document).ready(function () {
+
+    let apiPath = "./backend/index.php"
+
     // When document is ready
     $.ajax({
         method: "get",
-        url: "backend/index.php?resource=products", // This calls the backend/index.php file (relative to the .html file)
+        url: apiPath + "?resource=products", // This calls the backend/index.php file (relative to the .html file)
         dataType: "json", // We know we want JSON data
         success: function (data) {
             // log the products to the console and then set add them to the HTML:

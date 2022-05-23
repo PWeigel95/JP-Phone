@@ -1,7 +1,7 @@
 <?php 
 
-require_once("../config/datahandler.php");
-require_once("../models/user.class.php");
+require_once("./config/datahandler.php");
+require_once("./models/user.class.php");
 
 $businessLogic = new BusinessLogic();
 $businessLogic->processRequest();
