@@ -40,6 +40,9 @@ class BusinessLogic{
             case "products":
                 $this->processGetProducts();
                 break;
+            case "basket":
+                $this->processGetBasket();
+                break;
             default:
                 echo "Resource not found";
         }
@@ -62,6 +65,9 @@ class BusinessLogic{
             case "login":
                 $this->processLogin($data);
                 break;
+            case "addToBasket":
+                $this->processAddToBasket();
+                break;
             default:
                 echo "Action not found";
         }
@@ -69,6 +75,41 @@ class BusinessLogic{
 
     function processGetProducts() {
         $this->success(200, $this->dh->getProducts());
+    }
+
+    function processGetBasket() {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        $idsInBasket = array();
+        if (isset($_SESSION["basket"])) {
+            $idsInBasket = $_SESSION["basket"];
+        }
+        $productsById = $this->dh->getProductsById();
+
+        $totalPrice = 0;
+
+        $basketProducts = array();
+        foreach ($idsInBasket as $productId => $count) {
+            if (isset($productsById[$productId])) {
+                $product = $productsById[$productId];
+                $price = floatval($product->price) * $count;
+                $totalPrice += $price;
+                array_push($basketProducts, array(
+                    "product" => $product,
+                    "count" => $count,
+                    "price" => number_format($price, 2, ".", ""),
+                ));
+            }
+        }
+
+        $basket = array(
+            "products" => $basketProducts,
+            "totalPrice" => number_format($totalPrice, 2, ".", ""),
+        );
+
+
+        $this->success(200, $basket);
     }
 
     function processLogin($loginData){
@@ -83,6 +124,31 @@ class BusinessLogic{
 
         // status code 201 = "login successful"
         $this->success(201, $result);
+    }
+
+    function processAddToBasket() {
+        // check json data
+        if(!isset($_GET["product_id"])){
+            $this->error(400, [], "Bad Request - product_id is required!");
+        }
+
+        $productId = $_GET["product_id"];
+        $productsById = $this->dh->getProductsById();
+        if (!isset($productsById[$productId])) {
+            $this->error(400, [], "Bad Request - unknown product_id");
+        }
+
+        session_start();
+        if (!isset($_SESSION["basket"])) {
+            $_SESSION["basket"] = array();
+        }
+        if (!isset($_SESSION["basket"][$productId])) {
+            $_SESSION["basket"][$productId] = 1;
+        } else {
+            $_SESSION["basket"][$productId]++;
+        }
+
+        $this->processGetBasket();
     }
     
 

@@ -55,6 +55,15 @@ class Datahandler{
         return $products;
     }
 
+    public function getProductsById() {
+        $allProducts = $this->getProducts();
+        $productsById = array();
+        foreach ($allProducts as $product) {
+            $productsById[$product->product_id] = $product;
+        }
+        return $productsById;
+    }
+
     public function getUser($loginData){
 
         $user = array();
