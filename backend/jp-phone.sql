@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 17. Mai 2022 um 23:48
+-- Erstellungszeit: 25. Mai 2022 um 13:14
 -- Server-Version: 10.4.21-MariaDB
--- PHP-Version: 8.0.12
+-- PHP-Version: 8.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -83,36 +83,30 @@ CREATE TABLE `users` (
   `passwort` varchar(200) NOT NULL,
   `zahlungsinformation_id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
-  `user_status` int(11) NOT NULL
+  `erstellungsdatum` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `users`
 --
 
-INSERT INTO `users` (`user_id`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `benutzername`, `passwort`, `zahlungsinformation_id`, `role_id`, `user_status`) VALUES
-(1, 'Herr', 'abc@hotmail', 'test', 'user', '', '', 0, '', 'password', 0, 2, 0),
-(2, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdfasdf', 'asdf', 'sad', 0, 'asdfasdf', '$2y$10$o3N80TiTC5ZM5dHhrSLK/eq3wRvySbpxAIQnKnfjtkTQ4f5rAnaMW', 1, 1, 1),
-(3, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$yq8mOx1LUjq1oDCTVHSqHeoWdZIMjNeFqfoU/mxMwMMFNct67XhdG', 1, 1, 1),
-(4, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asd', 0, 'asdfasdf', '$2y$10$Ifvc7vX1SvhyfQF0AxgZMOzvNyoPxvQxjfF/4HcE23AU6mQIebphy', 1, 1, 1),
-(5, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asd', 0, 'asdfasdf', '$2y$10$x0cJ7dlkfuaGfWqO8f7dDOLLLYJzFWb4JrJg4UOZtjjuASQcpLgRu', 1, 1, 1),
-(6, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$M2iKC8qMU3A7.2sIJBXEd.NaX63JMEky0CEJaOztsFLVgaZGsd.ym', 1, 1, 1),
-(7, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'sdfg', 'asdf', 0, 'asdfasdf', '$2y$10$5eKWDSt5PV969KOMchrC6etzX4yh9UXau1LSGt/E0VATwLLaIVVTC', 1, 1, 1),
-(8, 'Frau', 'asdf@hotmail.com', 'asdfas', 'asdf', 'asdf', 'as', 0, 'asdfasdf', '$2y$10$gsrSSq9jGVVbscESJtK2UO6M7OO2R5iF7cQlNrbnWr51dtqHrcuoK', 1, 1, 1),
-(9, 'Frau', 'asdf@hotmail.com', 'asdfas', 'asdf', 'asdf', 'as', 0, 'asdfasdf', '$2y$10$qmfZx970oYQIMIk05fg0iORR.RFo.4tBe0Zbw8m88hm0z5IworWO6', 1, 1, 1),
-(10, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'as', 0, 'asdfasdf', '$2y$10$WWb6Z9234p./KX71GAtXEOJTYyvOUYZujW5cGh77MDDuabjAJ4MIa', 1, 1, 1),
-(11, 'Frau', 'asdf@hotmail.com', 'asd', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$0FLkfJG1j76vNoVMUE566ObXcOAdmPlan7AH/Ye1LUbpBLnhCyU1y', 1, 1, 1),
-(12, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$6zirokHB4dRlQA1z7FxBkuWnCHjoZkxRa2ou6DQq7Yvl/t5UQQfGe', 1, 1, 1);
+INSERT INTO `users` (`user_id`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `benutzername`, `passwort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`) VALUES
+(1, 'Herr', 'abc@hotmail', 'test', 'user', '', '', 0, '', 'password', 0, 2, ''),
+(2, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdfasdf', 'asdf', 'sad', 0, 'asdfasdf', '$2y$10$o3N80TiTC5ZM5dHhrSLK/eq3wRvySbpxAIQnKnfjtkTQ4f5rAnaMW', 1, 1, ''),
+(3, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$yq8mOx1LUjq1oDCTVHSqHeoWdZIMjNeFqfoU/mxMwMMFNct67XhdG', 1, 1, ''),
+(4, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asd', 0, 'asdfasdf', '$2y$10$Ifvc7vX1SvhyfQF0AxgZMOzvNyoPxvQxjfF/4HcE23AU6mQIebphy', 1, 1, ''),
+(5, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asd', 0, 'asdfasdf', '$2y$10$x0cJ7dlkfuaGfWqO8f7dDOLLLYJzFWb4JrJg4UOZtjjuASQcpLgRu', 1, 1, ''),
+(6, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$M2iKC8qMU3A7.2sIJBXEd.NaX63JMEky0CEJaOztsFLVgaZGsd.ym', 1, 1, ''),
+(7, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'sdfg', 'asdf', 0, 'asdfasdf', '$2y$10$5eKWDSt5PV969KOMchrC6etzX4yh9UXau1LSGt/E0VATwLLaIVVTC', 1, 1, ''),
+(8, 'Frau', 'asdf@hotmail.com', 'asdfas', 'asdf', 'asdf', 'as', 0, 'asdfasdf', '$2y$10$gsrSSq9jGVVbscESJtK2UO6M7OO2R5iF7cQlNrbnWr51dtqHrcuoK', 1, 1, ''),
+(9, 'Frau', 'asdf@hotmail.com', 'asdfas', 'asdf', 'asdf', 'as', 0, 'asdfasdf', '$2y$10$qmfZx970oYQIMIk05fg0iORR.RFo.4tBe0Zbw8m88hm0z5IworWO6', 1, 1, ''),
+(10, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'as', 0, 'asdfasdf', '$2y$10$WWb6Z9234p./KX71GAtXEOJTYyvOUYZujW5cGh77MDDuabjAJ4MIa', 1, 1, ''),
+(11, 'Frau', 'asdf@hotmail.com', 'asd', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$0FLkfJG1j76vNoVMUE566ObXcOAdmPlan7AH/Ye1LUbpBLnhCyU1y', 1, 1, ''),
+(12, 'Frau', 'asdf@hotmail.com', 'asdf', 'asdf', 'asdf', 'asdf', 0, 'asdfasdf', '$2y$10$6zirokHB4dRlQA1z7FxBkuWnCHjoZkxRa2ou6DQq7Yvl/t5UQQfGe', 1, 1, '');
 
 --
 -- Indizes der exportierten Tabellen
 --
-
---
--- Indizes für die Tabelle `products`
---
-ALTER TABLE `products`
-  ADD PRIMARY KEY (`product_id`);
 
 --
 -- Indizes für die Tabelle `roles`
@@ -129,12 +123,6 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT für exportierte Tabellen
 --
-
---
--- AUTO_INCREMENT für Tabelle `products`
---
-ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `roles`

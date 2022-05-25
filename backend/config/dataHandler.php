@@ -93,8 +93,8 @@ class Datahandler{
 
                     $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername, $aktuellesPassword, $zahlungsinformation_id, $role_id, $erstellungsdatum);
 
-                    $_SESSION["user_id"] = $user_id;
-                    $_SESSION["benutzername"] = $benutzername;    
+                    $_SESSION["user"]["user_id"] = $user_id;
+                    $_SESSION["user"]["benutzername"] = $benutzername;    
 
                     if($loginData->loginChecked){
                         setCookie("user_id", $user_id);

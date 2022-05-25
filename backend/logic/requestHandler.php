@@ -113,6 +113,13 @@ class BusinessLogic{
     }
 
     function processLogin($loginData){
+
+        if(isset($_COOKIE)){
+            //User checked "Remember me" and was logged in
+            $this->success(201, $_COOKIE);
+                 
+        }
+        else{
         // check json data
         if(!isset($loginData->benutzername) || !isset($loginData->passwort) || !isset($loginData->loginChecked)){
             $this->error(400, [], "Bad Request - username, passwort, loginChecked are required!");
@@ -124,6 +131,8 @@ class BusinessLogic{
 
         // status code 201 = "login successful"
         $this->success(201, $result);
+        }
+            
     }
 
     function processAddToBasket() {
