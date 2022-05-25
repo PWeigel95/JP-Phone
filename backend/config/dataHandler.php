@@ -70,8 +70,6 @@ class Datahandler{
 
         $stmt->bind_param("s", $loginData->benutzername);
 
-        $stmt->execute();
-
         $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $anrede, $email, $vorname, $nachname, $adresse, $plz, $ort, $zahlungsinformation_id, $user_status,$role_id, $erstellungsdatum);
 
         if ($stmt->execute()) {
@@ -92,42 +90,17 @@ class Datahandler{
                     if($loginData->loginChecked){
                         setCookie("user_id", $user_id);
                         setCookie("benutzername", $benutzername);                        
-                    }
-    
-                    return $user;
+                    }                
                 }
-                //Falls die Passwörter nicht übereinstimmen sollten
-                else if (!$isPasswordCorrect) {
-                    $login_error = "Wrong username/password";
-                    return false;
-                }
-                //Falls der User nicht "aktiv" ist
-                else if ($user_status != 1) {
-                    $login_error =  "User is inactive! Please contact the system administrator";
-                    return false;
-                }
+                
+                return $user;
             }
         }
+        $db_obj->close();
     }
 
     public function createUser($userdata){
         $db_obj = $this->getDb();
-
-
-        /*
-        echo "Anrede: " .$userdata->anrede;
-        echo "vorname: " .$userdata->vorname;
-        echo "nachname: " .$userdata->nachname;
-        echo "adresse: " .$userdata->adresse;
-        echo "plz: " .$userdata->plz;
-        echo "ort: " .$userdata->ort;
-        echo "email: " .$userdata->email;
-        echo "username: " .$userdata->benutzername;
-        echo "passwort: " .$userdata->passwort;
-        echo "zahlungsinformation_id: " .$userdata->zahlungsinformation_id;
-        echo "role_id: " .$userdata->role_id;
-        echo "user_status: " .$userdata->user_status;
-        */
 
         $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `user_status`, `erstellungsdatum`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
@@ -164,7 +137,6 @@ class Datahandler{
             
         }
         
-
     }
     
 }
