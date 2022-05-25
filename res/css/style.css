@@ -6,3 +6,11 @@ small {
 .product-image {
     padding: 16px;
 }
+
+.basket-product-image {
+    height: 64px;
+}
+
+.basket-product-image-container {
+    width: 120px;
+}
