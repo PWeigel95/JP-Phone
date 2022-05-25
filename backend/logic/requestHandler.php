@@ -167,12 +167,11 @@ class BusinessLogic{
         $data->passwort = password_hash($data->passwort, PASSWORD_DEFAULT);
 
         $role_id = 1;
-        $user_status = 1;
 
         $date = new DateTime();
         $erstellungsdatum = $date->format("d-M-Y H:i:s");
 
-        $user = new User($data->anrede,$data->vorname,$data->nachname, $data->adresse, $data->plz, $data->ort, $data->email, $data->benutzername, $data->passwort, $data->zahlungsinformation_id,$role_id, $user_status,$erstellungsdatum);
+        $user = new User($data->anrede,$data->vorname,$data->nachname, $data->adresse, $data->plz, $data->ort, $data->email, $data->benutzername, $data->passwort, $data->zahlungsinformation_id,$role_id,$erstellungsdatum);
 
         if (($result = $this->dh->createUser($user)) === false) {
             $this->error(400, [], "Bad Request - error saving user");

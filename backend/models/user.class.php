@@ -12,11 +12,10 @@ class User {
     public $passwort;
     public $zahlungsinformation_id;
     public $role_id;
-    public $user_status;
     public $erstellungsdatum;
 
     function __construct(/*$id,*/ $anrede, $vorname, $nachname, $adresse, $plz, $ort,$email,
-    $benutzername, $passwort, $zahlungsinformation_id, $role_id,  $user_status, $erstellungsdatum) {
+    $benutzername, $passwort, $zahlungsinformation_id, $role_id, $erstellungsdatum) {
         //$this->id = $id;
         $this->anrede = $anrede;
         $this->vorname=$vorname;
@@ -29,7 +28,6 @@ class User {
         $this->passwort=$passwort;
         $this->zahlungsinformation_id=$zahlungsinformation_id;
         $this->role_id=$role_id;
-        $this->user_status=$user_status;
         $this->erstellungsdatum=$erstellungsdatum;
         
       }

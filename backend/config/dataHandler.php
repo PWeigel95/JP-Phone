@@ -67,19 +67,19 @@ class Datahandler{
     public function getUser($loginData){
 
         $user = array();
-       
+        echo 'test';
 
         // connect to mysql:
         $db_obj = $this->getDb();
 
         // run the query
-        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `user_status`, `role_id`, `erstellungsdatum`   from `users` where `benutzername` = ?";
+        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`   from `users` where `benutzername` = ?";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
         $stmt->bind_param("s", $loginData->benutzername);
 
-        $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $anrede, $email, $vorname, $nachname, $adresse, $plz, $ort, $zahlungsinformation_id, $user_status,$role_id, $erstellungsdatum);
+        $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $anrede, $email, $vorname, $nachname, $adresse, $plz, $ort, $zahlungsinformation_id,$role_id, $erstellungsdatum);
 
         if ($stmt->execute()) {
 
@@ -87,11 +87,11 @@ class Datahandler{
                 //Überprüfe, ob das eingebene Passwort mit dem Passwort aus der Datenbank übereinstimmt
                 $isPasswordCorrect = password_verify($loginData->passwort, $aktuellesPassword);
 
-                if ($isPasswordCorrect && $user_status == 1) {
+                if ($isPasswordCorrect) {
 
                     session_start();
 
-                    $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername, $aktuellesPassword, $zahlungsinformation_id, $role_id, $user_status, $erstellungsdatum);
+                    $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername, $aktuellesPassword, $zahlungsinformation_id, $role_id, $erstellungsdatum);
 
                     $_SESSION["user_id"] = $user_id;
                     $_SESSION["benutzername"] = $benutzername;    
@@ -111,7 +111,7 @@ class Datahandler{
     public function createUser($userdata){
         $db_obj = $this->getDb();
 
-        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `user_status`, `erstellungsdatum`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `erstellungsdatum`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
@@ -127,7 +127,6 @@ class Datahandler{
         $userdata->passwort,
         $userdata->zahlungsinformation_id,
         $userdata->role_id,
-        $userdata->user_status,
         $userdata->erstellungsdatum);
 
         if($stmt->execute()){

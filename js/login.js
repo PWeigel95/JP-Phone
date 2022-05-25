@@ -31,6 +31,7 @@ $(document).ready(function() {
             data: JSON.stringify(loginData),
             success: function(data) {
                 alert("Login successful!");
+                alert(data);
                 location.href = "./index.html";
             },
             error: function(xhr, ajaxOptions, thrownError) {
