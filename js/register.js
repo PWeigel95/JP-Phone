@@ -53,8 +53,8 @@ $(document).ready(function() {
             datatype: "json",
             url: apiPath + "?action=register",
             data: JSON.stringify(userData),
-            success: function() {
-                alert("New User created!");
+            success: function(data) {
+                alert(JSON.stringify(data));
                 location.href = "./login.html";
 
             },

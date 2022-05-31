@@ -114,9 +114,9 @@ class BusinessLogic{
 
     function processLogin($loginData){
 
-        if(isset($_COOKIE)){
+        if(isset($_COOKIE["user_id"])){
             //User checked "Remember me" and was logged in
-            $this->success(201, $_COOKIE);
+            $this->success(201, $_COOKIE["user_id"]);
                  
         }
         else{

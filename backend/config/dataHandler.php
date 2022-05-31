@@ -67,7 +67,6 @@ class Datahandler{
     public function getUser($loginData){
 
         $user = array();
-        echo 'test';
 
         // connect to mysql:
         $db_obj = $this->getDb();
@@ -111,11 +110,11 @@ class Datahandler{
     public function createUser($userdata){
         $db_obj = $this->getDb();
 
-        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `erstellungsdatum`) VALUES (?, ?, ?, ?, ?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `erstellungsdatum`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
-        $stmt->bind_param("sssssssssiiis", 
+        $stmt->bind_param("sssssssssiis", 
         $userdata->anrede, 
         $userdata->vorname, 
         $userdata->nachname, 
