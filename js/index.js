@@ -1,18 +1,28 @@
 $(document).ready(function() {
-    if (checkIfLoggedIn()) {
-        $("#loginText").text("Logout");
-        $("#loginText").attr("href", "logout.html");
+    if (checkIfUserIsLoggedIn()) {
+        $("#loginNav").text("Logout");
+        $("#loginNav").attr("href", "logout.html");
     } else {
-        $("#loginText").text("Login");
-        $("#loginText").attr("href", "login.html");
+        $("#loginNav").text("Login");
+        $("#loginNav").attr("href", "login.html");
 
     }
 
-    function checkIfLoggedIn() {
+    function checkIfUserIsLoggedIn() {
 
         //TODO: Check if user is logged in
 
         return true;
+
+    }
+
+    function checkUserRights() {
+
+    }
+
+    function displayMenu() {
+
+
 
     }
 

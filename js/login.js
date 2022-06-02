@@ -1,3 +1,5 @@
+var userObject;
+
 $(document).ready(function() {
 
     let apiPath = "./backend/index.php"
@@ -31,11 +33,12 @@ $(document).ready(function() {
             data: JSON.stringify(loginData),
             success: function(data) {
                 alert(JSON.stringify(data, null, 4));
-                if (data == null) {
-                    alert("Login failed");
-                } else {
+                if (Object.keys(data).length > 0) {
                     alert("Login successful");
                     location.href = "./index.html";
+                } else {
+                    alert("Wrong username/password");
+
                 }
 
             },

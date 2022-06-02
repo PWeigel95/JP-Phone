@@ -101,8 +101,9 @@ class Datahandler{
                     }                
                 }
                 
-                return $user;
+                
             }
+            return $user;
         }
         $db_obj->close();
     }
