@@ -35,6 +35,9 @@ $(document).ready(function() {
                 alert(JSON.stringify(data, null, 4));
                 if (Object.keys(data).length > 0) {
                     alert("Login successful");
+                    window.localStorage.setItem('username', data["benutzername"]);
+                    window.localStorage.setItem('role_id', data["role_id"]);
+
                     location.href = "./index.html";
                 } else {
                     alert("Wrong username/password");
