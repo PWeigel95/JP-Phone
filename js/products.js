@@ -30,7 +30,7 @@ function addProduct(product) {
             method: "post",
             url: apiPath + "?action=addToBasket&product_id=" + product.product_id,
             dataType: "json",
-            success: function (data) {
+            success: function(data) {
                 // log the products to the console and then set add them to the HTML:
                 console.log(data);
                 setBasket(data);
@@ -66,13 +66,31 @@ function setBasket(basket) {
     }
 }
 
-$(document).ready(function () {
+function filterProducts() {
+    $('#produktFilterInput').keyup(function() {
+
+        var searchText = $(this).val().toLowerCase();
+
+        $('#products > div').each(function() {
+
+            var currentLiText = $(this).text().toLowerCase(),
+                showCurrentLi = currentLiText.indexOf(searchText) !== -1;
+
+            $(this).toggle(showCurrentLi);
+
+        })
+    })
+};
+
+$(document).ready(function() {
     // When document is ready
+    filterProducts();
+
     $.ajax({
         method: "get",
         url: apiPath + "?resource=products", // This calls the backend/index.php file (relative to the .html file)
         dataType: "json", // We know we want JSON data
-        success: function (data) {
+        success: function(data) {
             // log the products to the console and then set add them to the HTML:
             console.log(data);
             setProducts(data);
@@ -81,12 +99,12 @@ $(document).ready(function () {
             console.error(error);
         },
     });
-    
+
     $.ajax({
         method: "get",
         url: apiPath + "?resource=basket",
         dataType: "json", // We know we want JSON data
-        success: function (data) {
+        success: function(data) {
             // log the basket to the console and then set add them to the HTML:
             console.log(data);
             setBasket(data);
