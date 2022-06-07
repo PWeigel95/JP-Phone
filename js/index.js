@@ -27,13 +27,10 @@ $(document).ready(function() {
     }
 
     function displayMenu(role_id) {
-        alert(role_id);
-
 
         switch (role_id) {
             // Gast
             case null:
-                alert("TEST");
                 $("#meinKontoNav").hide();
                 $("#produkteBearbeitenNav").hide();
                 $("#kundenBearbeitenNav").hide();
@@ -86,6 +83,8 @@ $(document).ready(function() {
         $.ajax({
             method: "POST",
             url: apiPath + "?action=logout",
+            dataType: json,
+            data: window.localStorage,
             success: function() {
 
                 window.localStorage.clear();

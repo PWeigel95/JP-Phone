@@ -161,6 +161,12 @@ class Datahandler{
         return true;
         
     }
+
+    public function updateUser($userData){
+
+        $db_obj = $this->getDb();
+        
+    }
     
 }
 

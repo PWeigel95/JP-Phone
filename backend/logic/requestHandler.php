@@ -25,6 +25,9 @@ class BusinessLogic{
             case "POST":
                 $this->processPost();
                 break;
+            case "PUT":
+                $this->processPut();
+                break;
             default:
                 echo "Method not found";
         }
@@ -74,6 +77,24 @@ class BusinessLogic{
             default:
                 echo "Action not found";
         }
+    }
+
+    function processPut(){
+
+        if (!isset($_GET['action'])) {
+            $this->error(400, [], "Bad Request - no action");
+        }
+
+        $data = json_decode(file_get_contents("php://input"));
+
+        switch ($_GET['action']) {
+            case "updateUser":
+                $this->processUpdateUser($data);
+                break;
+            default:
+                echo "Action not found";
+        }
+
     }
 
     function processGetProducts() {
@@ -196,6 +217,17 @@ class BusinessLogic{
     function processLogout(){
 
         if (($result = $this->dh->logoutUser()) === false) {
+            $this->error(400, [], "Bad Request - error logout");
+        }
+        $this->success(200, $result);
+        
+    }
+
+    function processUpdateUser($userData){
+
+        //$user = new User();
+
+        if (($result = $this->dh->updateUser()) === false) {
             $this->error(400, [], "Bad Request - error logout");
         }
         $this->success(200, $result);

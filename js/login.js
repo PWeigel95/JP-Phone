@@ -35,6 +35,12 @@ $(document).ready(function() {
             success: function(data) {
                 if (Object.keys(data).length > 0) {
                     window.localStorage.setItem('username', data["benutzername"]);
+                    window.localStorage.setItem('vorname', data["vorname"]);
+                    window.localStorage.setItem('nachname', data["nachname"]);
+                    window.localStorage.setItem('adresse', data["adresse"]);
+                    window.localStorage.setItem('plz', data["plz"]);
+                    window.localStorage.setItem('ort', data["ort"]);
+                    window.localStorage.setItem('email', data["email"]);
                     window.localStorage.setItem('role_id', data["role_id"]);
 
                     location.href = "./index.html";
