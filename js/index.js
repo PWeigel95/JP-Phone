@@ -1,22 +1,14 @@
 $(document).ready(function() {
-    window.localStorage.clear()
+    window.localStorage.clear();
 
     var username = window.localStorage.getItem('username');
     var role_id = window.localStorage.getItem('role_id');
 
-    $("#welcome-txt").text("Willkommen " + username);
+    showWelcomeText();
 
     displayMenu(role_id);
+    setLoginText();
 
-    if (checkIfUserIsLoggedIn()) {
-
-        $("#loginNav").children().text("Logout");
-        $("#loginNav").children().attr("href", "logout.html");
-    } else {
-        $("#loginNav").children().text("Login");
-        $("#loginNav").children().attr("href", "login.html");
-
-    }
 
     function checkIfUserIsLoggedIn() {
         //TODO: Check if user is logged in
@@ -49,6 +41,31 @@ $(document).ready(function() {
                 $("#meinKontoNav").hide();
                 break;
 
+
+        }
+
+    }
+
+    function showWelcomeText() {
+
+        willkommenText = "Willkommen";
+        if (username == null) {
+            $("#welcome-txt").text(willkommenText);
+        } else {
+            $("#welcome-txt").text(willkommenText + " " +
+                username + "!");
+        }
+    }
+
+    function setLoginText() {
+
+        if (checkIfUserIsLoggedIn()) {
+
+            $("#loginNav").children().text("Logout");
+            $("#loginNav").children().attr("href", "logout.html");
+        } else {
+            $("#loginNav").children().text("Login");
+            $("#loginNav").children().attr("href", "login.html");
 
         }
 

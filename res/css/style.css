@@ -14,3 +14,8 @@ small {
 .basket-product-image-container {
     width: 120px;
 }
+
+p.loginError {
+    color: red;
+    display: none;
+}

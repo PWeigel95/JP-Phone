@@ -1,6 +1,7 @@
 var userObject;
 
 $(document).ready(function() {
+    checkIfUserIsLoggedIn()
 
     let apiPath = "./backend/index.php"
 
@@ -32,15 +33,13 @@ $(document).ready(function() {
             dataType: "json", // We know we want JSON data
             data: JSON.stringify(loginData),
             success: function(data) {
-                alert(JSON.stringify(data, null, 4));
                 if (Object.keys(data).length > 0) {
-                    alert("Login successful");
                     window.localStorage.setItem('username', data["benutzername"]);
                     window.localStorage.setItem('role_id', data["role_id"]);
 
                     location.href = "./index.html";
                 } else {
-                    alert("Wrong username/password");
+                    showLoginError();
 
                 }
 
@@ -50,6 +49,19 @@ $(document).ready(function() {
                 console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
             },
         });
+
+    }
+
+    function checkIfUserIsLoggedIn() {
+        if (window.localStorage.getItem('username') != null) {
+            location.href = "./index.html";
+        }
+
+    }
+
+    function showLoginError() {
+
+        $("#loginError").show();
 
     }
 
