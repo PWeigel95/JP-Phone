@@ -19,3 +19,7 @@ p.loginError {
     color: red;
     display: none;
 }
+
+body {
+    display: none;
+}

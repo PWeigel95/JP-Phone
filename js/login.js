@@ -3,8 +3,6 @@ var userObject;
 $(document).ready(function() {
     checkIfUserIsLoggedIn()
 
-    let apiPath = "./backend/index.php"
-
     $("#btnLoginUser").on("click", function(event) {
 
         event.preventDefault();
@@ -29,7 +27,7 @@ $(document).ready(function() {
         // When document is ready
         $.ajax({
             method: "POST",
-            url: apiPath + "?action=login",
+            url: API_PATH + "?action=login",
             dataType: "json", // We know we want JSON data
             data: JSON.stringify(loginData),
             success: function(data) {

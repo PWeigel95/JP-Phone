@@ -1,5 +1,3 @@
-const apiPath = "./backend/index.php";
-
 function clearBasketProducts() {
     // clear all existing products in the HTML
     $("#basket").empty();
@@ -34,6 +32,7 @@ function setTotalPrice(totalPrice) {
 }
 
 function setBasket(basket) {
+    setNavbarBasket(basket);
     // first, clear any products (if there are any in the HTML already)
     clearBasketProducts();
 
@@ -49,7 +48,7 @@ $(document).ready(function () {
     // When document is ready
     $.ajax({
         method: "get",
-        url: apiPath + "?resource=basket", // This calls the backend/index.php file (relative to the .html file)
+        url: API_PATH + "?resource=basket", // This calls the backend/index.php file (relative to the .html file)
         dataType: "json", // We know we want JSON data
         success: function (data) {
             // log the products to the console and then set add them to the HTML:
