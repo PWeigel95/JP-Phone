@@ -68,6 +68,9 @@ class BusinessLogic{
             case "addToBasket":
                 $this->processAddToBasket();
                 break;
+            case "logout":
+                $this->processLogout();
+                break;
             default:
                 echo "Action not found";
         }
@@ -188,6 +191,15 @@ class BusinessLogic{
 
         // status code 201 = "created"
         $this->success(201, $result);
+    }
+
+    function processLogout(){
+
+        if (($result = $this->dh->logoutUser()) === false) {
+            $this->error(400, [], "Bad Request - error logout");
+        }
+        $this->success(200, $result);
+        
     }
 
     private function success(int $code, $obj) {

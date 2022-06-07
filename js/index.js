@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    window.localStorage.clear();
+
+    let apiPath = "./backend/index.php"
 
     var username = window.localStorage.getItem('username');
     var role_id = window.localStorage.getItem('role_id');
@@ -8,6 +9,10 @@ $(document).ready(function() {
 
     displayMenu(role_id);
     setLoginText();
+
+    $("#logOut").on("click", function() {
+        executelogOut();
+    })
 
 
     function checkIfUserIsLoggedIn() {
@@ -22,9 +27,13 @@ $(document).ready(function() {
     }
 
     function displayMenu(role_id) {
+        alert(role_id);
+
+
         switch (role_id) {
             // Gast
             case null:
+                alert("TEST");
                 $("#meinKontoNav").hide();
                 $("#produkteBearbeitenNav").hide();
                 $("#kundenBearbeitenNav").hide();
@@ -62,12 +71,33 @@ $(document).ready(function() {
         if (checkIfUserIsLoggedIn()) {
 
             $("#loginNav").children().text("Logout");
-            $("#loginNav").children().attr("href", "logout.html");
+            $("#loginNav").children().attr("id", "logOut");
+            $("#loginNav").children().attr("href", "index.html");
         } else {
             $("#loginNav").children().text("Login");
             $("#loginNav").children().attr("href", "login.html");
 
         }
+
+    }
+
+    function executelogOut() {
+
+        $.ajax({
+            method: "POST",
+            url: apiPath + "?action=logout",
+            success: function() {
+
+                window.localStorage.clear();
+                location.href = "./index.html";
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+
+            },
+        });
 
     }
 

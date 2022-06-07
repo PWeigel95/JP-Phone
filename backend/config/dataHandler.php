@@ -146,6 +146,21 @@ class Datahandler{
         }
         
     }
+
+    public function logoutUser(){
+        if (!isset($_SESSION))
+        {
+            $_SESSION = array();
+        }
+     
+        unset($_SESSION["user"]["user_id"]);
+        unset($_SESSION["user"]["benutzername"] );
+        unset($_COOKIE["user_id"]);
+        unset($_COOKIE["benutzername"]);
+
+        return true;
+        
+    }
     
 }
 
