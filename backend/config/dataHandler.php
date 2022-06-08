@@ -165,11 +165,126 @@ class Datahandler{
     public function updateUser($userData){
 
         $db_obj = $this->getDb();
-
+        
         // run the query
-        $sql = "UPDATE `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`   from `users` where `benutzername` = ?";
+        $sql = "UPDATE `users` SET `anrede` = ?, `vorname` = ?, `nachname` = ?, `email` = ?, `adresse` = ?, `plz` = ?, `ort` = ? WHERE `benutzername` = ? ";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
+        $stmt->bind_param("ssssssss",
+        $userData->anrede, 
+        $userData->vorname, 
+        $userData->nachname,
+        $userData->email, 
+        $userData->adresse, 
+        $userData->plz,
+        $userData->ort,
+        $userData->benutzername);
+
+        if($stmt->execute()){            
+                $stmt->close();
+                //close the connection
+                $db_obj->close();
+                return true;           
+        }
+        else{
+            echo htmlspecialchars($stmt->error);
+            //close the statement
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return false;
+            
+        }
+        
+    }
+
+    public function getCurrentUser($username){
+        // connect to mysql:
+        $db_obj = $this->getDb();
+
+        // run the query
+        $sql = "SELECT `anrede`,`vorname`, `nachname`, `email`, `adresse`, `plz`, `ort`, `benutzername` FROM `users` WHERE `benutzername` = ?";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("s", $username);
+
+        $stmt->bind_result($anrede, $vorname, $nachname, $email, $adresse, $plz, $ort, $benutzername);
+
+        if ($stmt->execute()) {
+
+            if ($stmt->fetch()) {
+
+                $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername,'','','','');
+
+                return $user;
+            }
+        }
+        $db_obj->close();
+        
+    }
+
+    public function checkPassword($userData){
+
+        $db_obj = $this->getDb();
+        
+        // run the query
+        $sql = "SELECT `passwort` FROM `users` WHERE `benutzername` = ?";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("s", $userData->username);
+
+        $stmt->bind_result($passwordFromDB);
+
+        if ($stmt->execute()) {
+
+            if ($stmt->fetch()) {                
+                //Überprüfe, ob das eingebene Passwort mit dem Passwort aus der Datenbank übereinstimmt
+                $isPasswordCorrect = password_verify($userData->password, $passwordFromDB);
+
+                if ($isPasswordCorrect) {
+                    
+                    return true;
+                }
+                else{
+                    return false;
+                }
+                
+                
+            }
+            else return false;
+        }
+        $db_obj->close();
+        
+    }
+
+    public function updatePassword($userData){
+
+        $db_obj = $this->getDb();
+
+        $passwordHashed = password_hash($userData->password, PASSWORD_DEFAULT);
+
+        $sql = "UPDATE `users` SET `passwort` = ? WHERE `benutzername` = ? ";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+        $stmt->bind_param("ss", $passwordHashed, $userData -> username);
+
+        if($stmt->execute()){            
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return true;           
+        }
+        else{
+            echo htmlspecialchars($stmt->error);
+            //close the statement
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return false;
+        
+        }
         
     }
     

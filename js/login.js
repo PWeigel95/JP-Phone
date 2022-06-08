@@ -32,6 +32,7 @@ $(document).ready(function() {
             data: JSON.stringify(loginData),
             success: function(data) {
                 if (Object.keys(data).length > 0) {
+                    window.localStorage.setItem('anrede', data["anrede"]);
                     window.localStorage.setItem('username', data["benutzername"]);
                     window.localStorage.setItem('vorname', data["vorname"]);
                     window.localStorage.setItem('nachname', data["nachname"]);

@@ -1,15 +1,8 @@
 $(document).ready(function() {
 
-    var vorname = window.localStorage.getItem('vorname');
-    var nachname = window.localStorage.getItem('nachname');
-    var email = window.localStorage.getItem('email');
-    var adresse = window.localStorage.getItem('adresse');
-    var plz = window.localStorage.getItem('plz');
-    var ort = window.localStorage.getItem('ort');
     var benutzername = window.localStorage.getItem('username');
 
     loadProfileData();
-
     listOrders();
 
     $("#btnGenerateInvoice").on("click", function(event) {
@@ -23,6 +16,13 @@ $(document).ready(function() {
         updateUserProfile();
 
     })
+
+    $("#btnChangePassword").on("click", function() {
+
+        updatePassword();
+
+    })
+
 
     function listOrders() {
         var orders = {
@@ -40,26 +40,42 @@ $(document).ready(function() {
 
     function loadProfileData() {
 
-        $("#inputFirstName").val(vorname);
-        $("#inputLastName").val(nachname);
-        $("#inputEmail").val(email);
-        $("#inputAdress").val(adresse);
-        $("#inputPLZ").val(plz);
-        $("#inputOrt").val(ort);
-        $("#inputUsername").val(username);
+
+        $.ajax({
+            method: "POST",
+            url: API_PATH + "?action=getCurrentUser",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(benutzername),
+            success: function(data) {
+                $("#anrede > option[value=" + data["anrede"] + "").attr("selected", "selected").val();
+                $("#inputFirstName").val(data["vorname"]);
+                $("#inputLastName").val(data["nachname"]);
+                $("#inputEmail").val(data["email"]);
+                $("#inputAddress").val(data["adresse"]);
+                $("#inputPlz").val(data["plz"]);
+                $("#inputOrt").val(data["ort"]);
+                $("#inputUsername").val(data["benutzername"]);
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
 
     }
 
     function updateUserProfile() {
 
         userData = {
-            vorname: vorname,
-            nachname: nachname,
-            email: email,
-            adresse: adresse,
-            plz: plz,
-            ort: ort,
-            benutzername: benutzername,
+            anrede: $("#anrede > option:selected").val(),
+            vorname: $("#inputFirstName").val(),
+            nachname: $("#inputLastName").val(),
+            email: $("#inputEmail").val(),
+            adresse: $("#inputAddress").val(),
+            plz: $("#inputPlz").val(),
+            ort: $("#inputOrt").val(),
+            benutzername: $("#inputUsername").val()
         }
 
 
@@ -68,7 +84,9 @@ $(document).ready(function() {
             url: API_PATH + "?action=updateUser",
             dataType: "json", // We know we want JSON data
             data: JSON.stringify(userData),
-            success: function(data) {
+            success: function() {
+                alert("Stammdaten wurde aktualisiert!");
+                loadProfileData();
 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -76,6 +94,74 @@ $(document).ready(function() {
                 console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
             },
         });
+
+    }
+
+    function updatePassword() {
+
+        if (isEnteredPasswordCorrect()) {
+
+            let enteredNewPassword = $("#newPassword").val();
+            let enteredNewPasswordConfirm = $("#newPasswordConfirm").val();
+
+            if (enteredNewPassword == enteredNewPasswordConfirm) {
+
+                var userData = {
+                    username: benutzername,
+                    password: enteredNewPassword
+                }
+
+                $.ajax({
+                    method: "PUT",
+                    url: API_PATH + "?action=changePassword",
+                    dataType: "json", // We know we want JSON data
+                    data: JSON.stringify(userData),
+                    success: function() {
+                        alert("Password aktualisiert");
+
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.log(JSON.stringify(xhr));
+                        console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+                    },
+                });
+
+            } else {
+                alert("Passwort stimmen nicht überein");
+            }
+
+        }
+
+    }
+
+    function isEnteredPasswordCorrect() {
+
+        let enteredOldPassword = $("#oldPassword").val();
+
+        var userData = {
+            username: benutzername,
+            password: enteredOldPassword
+        }
+
+
+
+        return $.ajax({
+            method: "POST",
+            url: API_PATH + "?action=checkPassword",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(userData),
+            success: function() {
+                return true;
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+                alert("Passwort falsch!");
+                return false;
+            },
+
+        })
+
 
     }
 

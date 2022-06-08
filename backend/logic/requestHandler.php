@@ -39,6 +39,9 @@ class BusinessLogic{
         if (!isset($_GET['resource'])) {
             $this->error(400, [], "Bad Request - no resource");
         }
+
+        $data = json_decode(file_get_contents("php://input"));
+        
         switch ($_GET['resource']) {
             case "products":
                 $this->processGetProducts();
@@ -74,6 +77,12 @@ class BusinessLogic{
             case "logout":
                 $this->processLogout();
                 break;
+            case "getCurrentUser":
+                $this->processGetCurrentUser($data);
+                break;
+            case "checkPassword":
+                $this->processCheckPassword($data);
+                break;
             default:
                 echo "Action not found";
         }
@@ -90,6 +99,9 @@ class BusinessLogic{
         switch ($_GET['action']) {
             case "updateUser":
                 $this->processUpdateUser($data);
+                break;
+            case "changePassword":
+                $this->processChangePassword($data);
                 break;
             default:
                 echo "Action not found";
@@ -224,14 +236,33 @@ class BusinessLogic{
     }
 
     function processUpdateUser($userData){
-
-        //$user = new User();
-
+        
         if (($result = $this->dh->updateUser($userData)) === false) {
             $this->error(400, [], "Bad Request - error logout");
         }
         $this->success(200, $result);
         
+    }
+
+    function processGetCurrentUser($username){
+
+        $this->success(200, $this->dh->getCurrentUser($username));
+        
+    }
+
+    function processCheckPassword($userData){
+        if (($result = $this->dh->checkPassword($userData)) === false) {
+            $this->error(400, [], "Bad Request - wrong password");
+        }
+        $this->success(200, $result);
+        
+    }
+
+    function processChangePassword($userData){
+        if (($result = $this->dh->updatePassword($userData)) === false) {
+            $this->error(400, [], "Bad Request - There was an error while changing the password!");
+        }
+        $this->success(200, $result);
     }
 
     private function success(int $code, $obj) {
