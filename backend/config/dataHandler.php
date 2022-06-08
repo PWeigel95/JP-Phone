@@ -165,6 +165,11 @@ class Datahandler{
     public function updateUser($userData){
 
         $db_obj = $this->getDb();
+
+        // run the query
+        $sql = "UPDATE `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`   from `users` where `benutzername` = ?";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
         
     }
     

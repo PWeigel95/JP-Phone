@@ -1,5 +1,13 @@
 $(document).ready(function() {
 
+    var vorname = window.localStorage.getItem('vorname');
+    var nachname = window.localStorage.getItem('nachname');
+    var email = window.localStorage.getItem('email');
+    var adresse = window.localStorage.getItem('adresse');
+    var plz = window.localStorage.getItem('plz');
+    var ort = window.localStorage.getItem('ort');
+    var benutzername = window.localStorage.getItem('username');
+
     loadProfileData();
 
     listOrders();
@@ -32,23 +40,34 @@ $(document).ready(function() {
 
     function loadProfileData() {
 
-        $("#inputFirstName").val(window.localStorage.getItem('vorname'));
-        $("#inputLastName").val(window.localStorage.getItem('nachname'));
-        $("#inputEmail").val(window.localStorage.getItem('email'));
-        $("#inputAdress").val(window.localStorage.getItem('adresse'));
-        $("#inputPLZ").val(window.localStorage.getItem('plz'));
-        $("#inputOrt").val(window.localStorage.getItem('ort'));
-        $("#inputUsername").val(window.localStorage.getItem('username'));
+        $("#inputFirstName").val(vorname);
+        $("#inputLastName").val(nachname);
+        $("#inputEmail").val(email);
+        $("#inputAdress").val(adresse);
+        $("#inputPLZ").val(plz);
+        $("#inputOrt").val(ort);
+        $("#inputUsername").val(username);
 
     }
 
     function updateUserProfile() {
 
+        userData = {
+            vorname: vorname,
+            nachname: nachname,
+            email: email,
+            adresse: adresse,
+            plz: plz,
+            ort: ort,
+            benutzername: benutzername,
+        }
+
+
         $.ajax({
             method: "PUT",
             url: apiPath + "?action=updateUser",
             dataType: "json", // We know we want JSON data
-            data: JSON.stringify(loginData),
+            data: JSON.stringify(userData),
             success: function(data) {
 
             },

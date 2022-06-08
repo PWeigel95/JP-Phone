@@ -227,7 +227,7 @@ class BusinessLogic{
 
         //$user = new User();
 
-        if (($result = $this->dh->updateUser()) === false) {
+        if (($result = $this->dh->updateUser($userData)) === false) {
             $this->error(400, [], "Bad Request - error logout");
         }
         $this->success(200, $result);
