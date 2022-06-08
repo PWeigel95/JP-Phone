@@ -97,6 +97,12 @@ INSERT INTO `users` (`user_id`, `anrede`, `email`, `vorname`, `nachname`, `adres
 --
 
 --
+-- Indizes für die Tabelle `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`product_id`);
+
+--
 -- Indizes für die Tabelle `roles`
 --
 ALTER TABLE `roles`
@@ -111,6 +117,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT für exportierte Tabellen
 --
+
+--
+-- AUTO_INCREMENT für Tabelle `products`
+--
+ALTER TABLE `products`
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `roles`

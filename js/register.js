@@ -1,7 +1,5 @@
 $(document).ready(function() {
 
-    let apiPath = "./backend/index.php"
-
     $("#form_register").submit(function(event) {
 
         event.preventDefault();
@@ -51,7 +49,7 @@ $(document).ready(function() {
         $.ajax({
             method: "POST",
             datatype: "json",
-            url: apiPath + "?action=register",
+            url: API_PATH + "?action=register",
             data: JSON.stringify(userData),
             success: function(data) {
                 alert(JSON.stringify(data));

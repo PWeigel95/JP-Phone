@@ -1,5 +1,3 @@
-const apiPath = "./backend/index.php";
-
 function clearProducts() {
     // clear all existing products in the HTML
     $("#products").empty();
@@ -28,12 +26,12 @@ function addProduct(product) {
         console.log("addToBasket", product);
         $.ajax({
             method: "post",
-            url: apiPath + "?action=addToBasket&product_id=" + product.product_id,
+            url: API_PATH + "?action=addToBasket&product_id=" + product.product_id,
             dataType: "json",
             success: function(data) {
                 // log the products to the console and then set add them to the HTML:
                 console.log(data);
-                setBasket(data);
+                setNavbarBasket(data);
             },
             error: function(error) {
                 console.error(error);
@@ -51,18 +49,6 @@ function setProducts(products) {
     // then, add all products to the #products div:
     for (const product of products) {
         addProduct(product);
-    }
-}
-
-function setBasket(basket) {
-    let productCount = 0;
-    for (const product of basket.products) {
-        productCount += product.count;
-    }
-    if (productCount === 0) {
-        $("#basketCount").attr("hidden", true);
-    } else {
-        $("#basketCount").text(productCount).attr("hidden", false);
     }
 }
 
@@ -88,26 +74,12 @@ $(document).ready(function() {
 
     $.ajax({
         method: "get",
-        url: apiPath + "?resource=products", // This calls the backend/index.php file (relative to the .html file)
+        url: API_PATH + "?resource=products", // This calls the backend/index.php file (relative to the .html file)
         dataType: "json", // We know we want JSON data
         success: function(data) {
             // log the products to the console and then set add them to the HTML:
             console.log(data);
             setProducts(data);
-        },
-        error: function(error) {
-            console.error(error);
-        },
-    });
-
-    $.ajax({
-        method: "get",
-        url: apiPath + "?resource=basket",
-        dataType: "json", // We know we want JSON data
-        success: function(data) {
-            // log the basket to the console and then set add them to the HTML:
-            console.log(data);
-            setBasket(data);
         },
         error: function(error) {
             console.error(error);

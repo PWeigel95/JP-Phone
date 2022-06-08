@@ -65,7 +65,7 @@ $(document).ready(function() {
 
         $.ajax({
             method: "PUT",
-            url: apiPath + "?action=updateUser",
+            url: API_PATH + "?action=updateUser",
             dataType: "json", // We know we want JSON data
             data: JSON.stringify(userData),
             success: function(data) {
