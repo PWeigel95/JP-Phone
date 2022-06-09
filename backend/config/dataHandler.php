@@ -287,6 +287,38 @@ class Datahandler{
         }
         
     }
+
+    public function createProduct($productData){
+
+        $db_obj = $this->getDb();
+
+        $sql = "INSERT INTO `products`(`name`, `price`, `description`, `image_url`) VALUES (?,?,?,?)";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("sdss", 
+        $productData->produktName,
+        $productData->produktPreis,
+        $productData->produktBeschreibung, 
+        $productData->produktFotoUrl);
+
+        if($stmt->execute()){            
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return true;           
+        }
+        else{
+            echo htmlspecialchars($stmt->error);
+            //close the statement
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return false;
+        
+        }
+        
+    }
     
 }
 

@@ -83,6 +83,9 @@ class BusinessLogic{
             case "checkPassword":
                 $this->processCheckPassword($data);
                 break;
+            case "createProduct":
+                $this->processCreateProduct($data);
+                break;
             default:
                 echo "Action not found";
         }
@@ -263,6 +266,13 @@ class BusinessLogic{
             $this->error(400, [], "Bad Request - There was an error while changing the password!");
         }
         $this->success(200, $result);
+    }
+
+    function processCreateProduct($productData){
+        if (($result = $this->dh->createProduct($productData)) === false) {
+            $this->error(400, [], "Bad Request - There was an error creating the product");
+        }
+        $this->success(200, $result);   
     }
 
     private function success(int $code, $obj) {

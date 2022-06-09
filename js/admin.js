@@ -1,22 +1,40 @@
 $(document).ready(function() {
 
-    $("#v-pills-editProducts-tab").on("click", function() {
-        loadEditProductPage();
+    $("#btnCreateProduct").on("click", function() {
+        createProduct();
 
     })
 
+    function createProduct() {
 
-    $("#v-pills-editCustomers-tab").on("click", function() {
-        loadEditCustomerPage();
+        let produktName = $("#inputProduktname").val();
+        let produktBeschreibung = $("#textareaBeschreibung").val();
+        let produktPreis = $("#inputPreis").val();
+        let produktFotoUrl = $("#fileProduktFoto").val();
 
-    })
+        let produkt = {
+            produktName: produktName,
+            produktBeschreibung: produktBeschreibung,
+            produktPreis: produktPreis,
+            produktFotoUrl: produktFotoUrl
+        }
 
-    $("#v-pills-editVouchers-tab").on("click", function() {
-        loadEditVoucherPage();
+        $.ajax({
+            method: "POST",
+            url: API_PATH + "?action=createProduct",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(produkt),
+            success: function() {
+                alert("Produkt erstellt!");
+                clearInputs();
 
-    })
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
 
-    function loadEditProductPage() {
 
     }
 
@@ -25,6 +43,14 @@ $(document).ready(function() {
     }
 
     function loadEditVoucherPage() {
+
+    }
+
+    function clearInputs() {
+        $("#inputProduktname").val("");
+        $("#textareaBeschreibung").val("");
+        $("#inputPreis").val("");
+        $("#fileProduktFoto").val("");
 
     }
 
