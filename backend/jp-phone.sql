@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 03. Jun 2022 um 19:32
+-- Erstellungszeit: 09. Jun 2022 um 19:33
 -- Server-Version: 10.4.21-MariaDB
 -- PHP-Version: 8.0.10
 
@@ -42,7 +42,9 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`product_id`, `name`, `price`, `description`, `image_url`) VALUES
 (1, 'Apple iPhone 11', '699.00', 'Apple iPhone 11', 'res/img/products/Apple iPhone 11.png'),
 (2, 'Apple iPhone 12', '849.00', 'Apple iPhone 12', 'res/img/products/Apple iPhone 11.png'),
-(3, 'Apple iPhone 13', '1049.00', 'Apple iPhone 13', 'res/img/products/Apple iPhone 11.png');
+(3, 'Apple iPhone 13', '1049.00', 'Apple iPhone 13', 'res/img/products/Apple iPhone 11.png'),
+(4, 'Apple 5', '299.99', 'Apple 5', ''),
+(5, 'Apple 4', '199.00', 'Apple 4', '');
 
 -- --------------------------------------------------------
 
@@ -73,11 +75,11 @@ CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
   `anrede` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `vorname` varchar(50) NOT NULL,
-  `nachname` varchar(50) NOT NULL,
+  `vorname` varchar(100) NOT NULL,
+  `nachname` varchar(100) NOT NULL,
   `adresse` varchar(100) NOT NULL,
   `plz` varchar(100) NOT NULL,
-  `ort` int(100) NOT NULL,
+  `ort` varchar(100) NOT NULL,
   `benutzername` varchar(100) NOT NULL,
   `passwort` varchar(200) NOT NULL,
   `zahlungsinformation_id` int(11) NOT NULL,
@@ -90,7 +92,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `benutzername`, `passwort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`) VALUES
-(13, 'Frau', 'test@hotmail.com', 'testuser', 'testuser', 'testuserstraße', '1010', 0, 'testuser', '$2y$10$N.o2IbxQxayKHuPpPJ4UdOScu3Rk66/Gzx5DD3RdOkm5w8zA9fEOO', 1, 1, '31-May-2022 19:43:32');
+(13, 'Herr', 'test@hotmail.com', 'testuser test', 'weigel test', 'teststraße', '1080', 'Wientest', 'testuser', '$2y$10$Z0Xvj.rlleA4rxPIZrPCLOKFnfPgZ6yLhQA3dP5NH3uNBAOE5nkA2', 1, 2, '31-May-2022 19:43:32');
 
 --
 -- Indizes der exportierten Tabellen
@@ -122,7 +124,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT für Tabelle `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT für Tabelle `roles`
