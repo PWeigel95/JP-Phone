@@ -54,6 +54,24 @@ $(document).ready(function() {
 
     }
 
+    function getAllUsers() {
+
+        $.ajax({
+            method: "GET",
+            url: API_PATH + "?action=getAllUsers",
+            dataType: "json", // We know we want JSON data
+            success: function() {
+                alert("Alle User bekommen!");
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
+
+    }
+
 
 
 

@@ -49,6 +49,9 @@ class BusinessLogic{
             case "basket":
                 $this->processGetBasket();
                 break;
+            case "getAllUsers":
+                $this->processGetAllUsers();
+                break;
             default:
                 echo "Resource not found";
         }
@@ -273,6 +276,15 @@ class BusinessLogic{
             $this->error(400, [], "Bad Request - There was an error creating the product");
         }
         $this->success(200, $result);   
+    }
+
+    function processGetAllUsers()
+    {
+        if (($result = $this->dh->getAllUsers()) === false) {
+            $this->error(400, [], "Bad Request - There was an error getting all users");
+        }
+        $this->success(200, $result);   
+        
     }
 
     private function success(int $code, $obj) {

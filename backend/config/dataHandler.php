@@ -319,6 +319,49 @@ class Datahandler{
         }
         
     }
+
+    public function getAllUsers(){
+
+        // Prepare the array we will return in the end:
+        $users = array();
+        
+        // connect to mysql:
+        $db_obj = $this->getDb();
+
+        // run the query
+        $query = "SELECT `anrede`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `email`, `benutzername` FROM users ORDER BY `user_id` ";
+        $result = $db_obj->query($query);
+        if (!$result) $this->handleError($db_obj);
+
+        // loop through all results
+        while ($row = $result->fetch_assoc()) {
+            // convert it into a Product instance
+            $user = new User(
+                $row['anrede'],
+                $row['vorname'],
+                $row['nachname'],
+                $row['adresse'],
+                $row['plz'],
+                $row['ort'],
+                $row['email'],
+                $row['benutzername'],
+                '',
+                '',
+                $row['role_id'],
+                ''              
+            );
+            // and add it to the array
+            array_push($users, $user);
+        }
+        
+        // close the connection
+        $db_obj->close();
+
+        // finally return all users
+        return $users;
+        
+    }
+
     
 }
 
