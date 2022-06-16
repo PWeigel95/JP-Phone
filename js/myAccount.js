@@ -25,17 +25,27 @@ $(document).ready(function() {
 
 
     function listOrders() {
-        var orders = {
-            "number": "1",
-            "amount": 655,
-            "date": "25.05.2020"
-        };
-
-        $("tbody > tr").append("<td>" + orders.number + " </td>");
-        $("tbody > tr").append("<td>" + orders.date + " </td>");
-        $("tbody > tr").append("<td>" + orders.amount + " </td>");
-        $("tbody > tr").append("<td><button type='button' id='btnGenerateInvoice' class='btn btn-primary'>Rechnung generieren</button></td>");
-
+        $.ajax({
+            method: "GET",
+            url: API_PATH + "?resource=orders",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(benutzername),
+            success: function(data) {
+                console.log(data);
+                for (const order of data) {
+                    $("#myOrdersTable").append(`<tr>
+                        <td>${order.order_id}</td>
+                        <td>${order.creation_date}</td>
+                        <td>${order.total_price} €</td>
+                        <td><button type='button' id='btnGenerateInvoice' class='btn btn-primary'>Rechnung anzeigen</button></td>
+                    </tr>`);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
     }
 
     function loadProfileData() {

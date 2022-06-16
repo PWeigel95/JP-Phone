@@ -5,6 +5,8 @@ small {
 
 .product-image {
     padding: 16px;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
 }
 
 .basket-product-image {

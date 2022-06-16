@@ -24,6 +24,39 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `orders`
+--
+
+CREATE TABLE `orders` (
+  `order_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `creation_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `billing_name` varchar(255) NOT NULL,
+  `billing_address` varchar(255) NOT NULL,
+  `billing_zipcode` varchar(255) NOT NULL,
+  `billing_place` varchar(255) NOT NULL,
+  `invoice_id` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `order_products`
+--
+
+CREATE TABLE `order_products` (
+  `order_product_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `price_per_item` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `products`
 --
 
@@ -99,6 +132,18 @@ INSERT INTO `users` (`user_id`, `anrede`, `email`, `vorname`, `nachname`, `adres
 --
 
 --
+-- Indizes für die Tabelle `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`order_id`);
+
+--
+-- Indizes für die Tabelle `order_products`
+--
+ALTER TABLE `order_products`
+  ADD PRIMARY KEY (`order_product_id`);
+
+--
 -- Indizes für die Tabelle `products`
 --
 ALTER TABLE `products`
@@ -119,6 +164,18 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT für exportierte Tabellen
 --
+
+--
+-- AUTO_INCREMENT für Tabelle `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+--
+-- AUTO_INCREMENT für Tabelle `order_products`
+--
+ALTER TABLE `order_products`
+  MODIFY `order_product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT für Tabelle `products`

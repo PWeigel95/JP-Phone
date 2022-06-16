@@ -59,4 +59,22 @@ $(document).ready(function () {
             console.error(error);
         },
     });
+
+    $("#orderButton").click(function () {
+        $.ajax({
+            method: "post",
+            url: API_PATH + "?action=checkout",
+            dataType: "json",
+            success: function (data) {
+                if (data === "created") {
+                    window.location = "./myAccount.html";
+                } else {
+                    console.log(data);
+                }
+            },
+            error: function(error) {
+                console.error(error);
+            },
+        });
+    });
 });

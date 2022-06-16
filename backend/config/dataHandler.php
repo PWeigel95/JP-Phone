@@ -1,6 +1,8 @@
 <?php
 
 require_once("./models/product.class.php");
+require_once("./models/order.class.php");
+require_once("./models/order_product.class.php");
 
 class Datahandler{
 
@@ -106,6 +108,44 @@ class Datahandler{
             return $user;
         }
         $db_obj->close();
+    }
+
+    public function getUserById($user_id){
+        // connect to mysql:
+        $db_obj = $this->getDb();
+
+        // run the query
+        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum` from `users` where `user_id` = ?";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("i", $user_id);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            if ($row) {
+                return new User(
+                    $row["anrede"],
+                    $row["vorname"],
+                    $row["nachname"],
+                    $row["adresse"],
+                    $row["plz"],
+                    $row["ort"],
+                    $row["email"],
+                    $row["benutzername"],
+                    $row["passwort"],
+                    $row["zahlungsinformation_id"],
+                    $row["role_id"],
+                    $row["erstellungsdatum"]
+                );
+            } else {
+                return null;
+            }
+        } else {
+            $db_obj->close();
+            return null;
+        }
     }
 
     public function createUser($userdata){
@@ -360,6 +400,194 @@ class Datahandler{
         // finally return all users
         return $users;
         
+    }
+
+    private function addProductToOrder($db_obj, $order_id, $product) {
+        $sql = "INSERT INTO `order_products` (`order_id`, `product_id`, `amount`, `price_per_item`, `total_price`) VALUES (?,?,?,?,?)";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+        $stmt->bind_param("iiidd",
+            $order_id,
+            $product["product"]->product_id,
+            $product["count"],
+            $product["product"]->price,
+            $product["price"],
+        );
+        if (!$stmt->execute()) {
+            echo htmlspecialchars($stmt->error);
+            //close the connection
+            $stmt->close();
+            $db_obj->close();
+            return false;
+        }
+        $stmt->close();
+        return true;
+    }
+
+    public function createOrder($user_id, $basket) {
+        $user = $this->getUserById($user_id);
+        if (!$user) {
+            return false;
+        }
+
+        $db_obj = $this->getDb();
+
+        // Generate Order
+        $sql = "INSERT INTO `orders` (`user_id`, `total_price`, `billing_name`, `billing_address`, `billing_zipcode`, `billing_place`) VALUES (?,?,?,?,?,?)";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+        $billing_name = $user->anrede.' '.$user->vorname.' '.$user->nachname;
+        $stmt->bind_param("idssss",
+            $user_id,
+            $basket["totalPrice"],
+            $billing_name,
+            $user->adresse, 
+            $user->plz, 
+            $user->ort
+        );
+        if (!$stmt->execute()) {
+            echo htmlspecialchars($stmt->error);
+            //close the connection
+            $stmt->close();
+            $db_obj->close();
+            return false;
+            
+        }
+        $order_id = $stmt->insert_id;
+        $stmt->close();
+
+
+        // Update Invoice ID
+        $invoice_id = date('Ym').str_pad($order_id, 6, '0', STR_PAD_LEFT);
+        $sql = "UPDATE `orders` SET `invoice_id` = ? WHERE `order_id` = ?";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+        $stmt->bind_param("si", $invoice_id, $order_id);
+
+        if (!$stmt->execute()) {
+            echo htmlspecialchars($stmt->error);
+            //close the connection
+            $stmt->close();
+            $db_obj->close();
+            return false;
+        }
+        $stmt->close();
+
+
+        // Insert Products for Order
+        foreach ($basket["products"] as $product) {
+            if (!$this->addProductToOrder($db_obj, $order_id, $product)) {
+                return false;
+            }
+        }
+
+
+        $db_obj->close();
+        return true;
+    }
+
+    public function fillOrderProducts($db_obj, $order) {
+        // run the query
+        $sql = "SELECT op.order_product_id, op.order_id, op.product_id, op.amount, op.price_per_item, op.total_price, p.product_id, p.name, p.price, p.description, p.image_url FROM order_products op LEFT JOIN products p ON (op.product_id = p.product_id) WHERE op.order_id = ?";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("i", $order->order_id);
+        $stmt->bind_result(
+            $op_order_product_id,
+            $op_order_id,
+            $op_product_id,
+            $op_amount,
+            $op_price_per_item,
+            $op_total_price,
+            $p_product_id,
+            $p_name,
+            $p_price,
+            $p_description,
+            $p_image_url,
+        );
+
+        if (!$stmt->execute()) $this->handleError($db_obj);
+
+        // loop through all results
+        while ($stmt->fetch()) {
+            // convert it into a Order instance
+            $product = new Product(
+                $p_product_id,
+                $p_name,
+                $p_price,
+                $p_description,
+                $p_image_url,
+            );
+            $order_product = new OrderProduct(
+                $op_order_product_id,
+                $op_order_id,
+                $op_product_id,
+                $op_amount,
+                $op_price_per_item,
+                $op_total_price,
+            );
+            $order_product->product = $product;
+            // and add it to the array
+            array_push($order->order_products, $order_product);
+        }
+        $stmt->close();
+    }
+
+    public function getOrdersForUser($user_id) {
+        // Prepare the array we will return in the end:
+        $orders = array();
+        
+        // connect to mysql:
+        $db_obj = $this->getDb();
+
+        // run the query
+        $sql = "SELECT order_id, user_id, total_price, creation_date, billing_name, billing_address, billing_zipcode, billing_place, invoice_id FROM orders WHERE user_id = ? ORDER BY creation_date DESC";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("i", $user_id);
+        $stmt->bind_result(
+            $o_order_id,
+            $o_user_id,
+            $o_total_price,
+            $o_creation_date,
+            $o_billing_name,
+            $o_billing_address,
+            $o_billing_zipcode,
+            $o_billing_place,
+            $o_invoice_id,
+        );
+
+        $stmt->execute();
+        // loop through all results
+        while ($stmt->fetch()) {
+            // convert it into a Order instance
+            $order = new Order(
+                $o_order_id,
+                $o_user_id,
+                $o_total_price,
+                $o_creation_date,
+                $o_billing_name,
+                $o_billing_address,
+                $o_billing_zipcode,
+                $o_billing_place,
+                $o_invoice_id,
+            );
+
+            // and add it to the array
+            array_push($orders, $order);
+        }
+
+        foreach ($orders as $order) {
+            $this->fillOrderProducts($db_obj, $order);
+        }
+        
+        // close the connection
+        $db_obj->close();
+
+        // finally return all orders
+        return $orders;
     }
 
     

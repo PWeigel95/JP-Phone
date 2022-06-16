@@ -1,6 +1,6 @@
 <?php 
 
-require_once("./config/datahandler.php");
+require_once("./config/dataHandler.php");
 require_once("./models/user.class.php");
 
 $businessLogic = new BusinessLogic();
@@ -52,6 +52,9 @@ class BusinessLogic{
             case "getAllUsers":
                 $this->processGetAllUsers();
                 break;
+            case "orders":
+                $this->processGetOrders();
+                break;
             default:
                 echo "Resource not found";
         }
@@ -89,6 +92,9 @@ class BusinessLogic{
             case "createProduct":
                 $this->processCreateProduct($data);
                 break;
+            case "checkout":
+                $this->processCheckout();
+                break;
             default:
                 echo "Action not found";
         }
@@ -119,14 +125,7 @@ class BusinessLogic{
         $this->success(200, $this->dh->getProducts());
     }
 
-    function processGetBasket() {
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-        $idsInBasket = array();
-        if (isset($_SESSION["basket"])) {
-            $idsInBasket = $_SESSION["basket"];
-        }
+    function getBasketData($idsInBasket) {
         $productsById = $this->dh->getProductsById();
 
         $totalPrice = 0;
@@ -150,18 +149,26 @@ class BusinessLogic{
             "totalPrice" => number_format($totalPrice, 2, ".", ""),
         );
 
+        return $basket;
+    }
 
-        $this->success(200, $basket);
+    function getSessionBasketData() {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        $idsInBasket = array();
+        if (isset($_SESSION["basket"])) {
+            $idsInBasket = $_SESSION["basket"];
+        }
+        return $this->getBasketData($idsInBasket);
+    }
+
+    function processGetBasket() {
+        $this->success(200, $this->getSessionBasketData());
     }
 
     function processLogin($loginData){
 
-        if(isset($_COOKIE["user_id"])){
-            //User checked "Remember me" and was logged in
-            $this->success(201, $_COOKIE["user_id"]);
-                 
-        }
-        else{
         // check json data
         if(!isset($loginData->benutzername) || !isset($loginData->passwort) || !isset($loginData->loginChecked)){
             $this->error(400, [], "Bad Request - username, passwort, loginChecked are required!");
@@ -173,7 +180,6 @@ class BusinessLogic{
 
         // status code 201 = "login successful"
         $this->success(201, $result);
-        }
             
     }
 
@@ -200,6 +206,41 @@ class BusinessLogic{
         }
 
         $this->processGetBasket();
+    }
+
+    function getCurrentUserId() {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["user_id"])) {
+            return null;
+        } else {
+            return $_SESSION["user"]["user_id"];
+        }
+    }
+
+    function processCheckout() {
+        $user_id = $this->getCurrentUserId();
+        if ($user_id == null) {
+            $this->error(400, [], "Not logged in!");
+        }
+
+        // Get current basket from the user
+        $basket = $this->getSessionBasketData();
+        if (count($basket["products"]) === 0) {
+            $this->error(400, [], "No products in basket!");
+        }
+
+        // Create order with order products
+        $result = $this->dh->createOrder($user_id, $basket);
+
+        if ($result) {
+            // Make basket empty
+            $_SESSION["basket"] = array();
+            $this->success(201, "created");
+        } else {
+            $this->error(400, [], "Error during creation");
+        }
     }
     
 
@@ -285,6 +326,17 @@ class BusinessLogic{
         }
         $this->success(200, $result);   
         
+    }
+
+    function processGetOrders() {
+        session_start();
+        $user_id = $this->getCurrentUserId();
+        if ($user_id) {
+            $orders = $this->dh->getOrdersForUser($user_id);
+            $this->success(200, $orders);
+        } else {
+            $this->error(400, [], "Bad Request - Not logged in");
+        }
     }
 
     private function success(int $code, $obj) {
