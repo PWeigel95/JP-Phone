@@ -41,7 +41,39 @@ $(document).ready(function() {
     });
 
     function checkInput() {
-        return true;
+        checkIfUsernameIsAlreadyTaken();
+        checkIfPasswordsAreMatching() ? true : false;
+
+
+    }
+
+    function checkIfUsernameIsAlreadyTaken() {
+
+        $.ajax({
+            method: "POST",
+            datatype: "json",
+            url: API_PATH + "?action=checkIfUsernameIsAlreadyTaken",
+            data: JSON.stringify(userData),
+            success: function(data) {
+                alert(JSON.stringify(data));
+                location.href = "./login.html";
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+
+        });
+
+    }
+
+    function checkIfPasswordsAreMatching() {
+
+        if (passwort != repeatpassword) {
+            $("#registerErrorRepeatPasswort").text("Passwort stimmen nicht überein");
+            return false;
+        } else return true;
 
     }
 

@@ -95,6 +95,9 @@ class BusinessLogic{
             case "checkout":
                 $this->processCheckout();
                 break;
+            case "checkIfUsernameIsAlreadyTaken":
+                $this->processCheckIfUsernameIsAlreadyTaken($data);
+                break;
             default:
                 echo "Action not found";
         }
@@ -337,6 +340,14 @@ class BusinessLogic{
         } else {
             $this->error(400, [], "Bad Request - Not logged in");
         }
+    }
+    function processCheckIfUsernameIsAlreadyTaken($userData)
+    {
+        if (($result = $this->dh->getUserByUsername($userData)) === false) {
+            $this->error(400, [], "Bad Request - There was an error getting all users");
+        }
+        $this->success(200, $result);   
+        
     }
 
     private function success(int $code, $obj) {

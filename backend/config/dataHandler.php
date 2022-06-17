@@ -402,6 +402,18 @@ class Datahandler{
         
     }
 
+    public function getUserByUsername($userData){
+
+        $db_obj = $this->getDb();
+
+        $sql = "SELECT 1 FROM users WHERE benutzername = ? ";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("s", $userData->username);
+        
+    }
+
     private function addProductToOrder($db_obj, $order_id, $product) {
         $sql = "INSERT INTO `order_products` (`order_id`, `product_id`, `amount`, `price_per_item`, `total_price`) VALUES (?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
