@@ -8,12 +8,14 @@ $(document).ready(function() {
     })
 
     $("#products").on("click", "#btnEditProduct", function() {
-        editProduct();
+        let productId = $(this).attr("name");
+        editProduct(productId);
 
     })
 
     $("#products").on("click", "#btnDeleteProduct", function() {
-        deleteProduct();
+        let productId = $(this).attr("name");
+        deleteProduct(productId);
 
     })
 
@@ -129,8 +131,8 @@ $(document).ready(function() {
                             <p class="card-text">${product.price}€</p>
                         </div>
                         <div class="p-2">
-                            <button id="btnEditProduct" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button>
-                            <button id="btnDeleteProduct" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                            <button id="btnEditProduct" class="btn btn-primary" name=${product.product_id}><i class="bi bi-pencil-square"></i></button>
+                            <button id="btnDeleteProduct" class="btn btn-danger" name=${product.product_id}><i class="bi bi-trash"></i></button>
                         </div>
                     </div>
                 </div>
@@ -140,12 +142,18 @@ $(document).ready(function() {
         $("#products").append(productDiv);
     }
 
-    function editProduct() {
+    function editProduct(productId) {
         alert("Produkt wird bearbeitet");
+        clearProducts();
+        loadEditProductPage(productId);
     }
 
     function deleteProduct() {
         alert("Produkt wird gelöscht");
+    }
+
+    function loadEditProductPage(productId) {
+
     }
 
 
