@@ -17,14 +17,21 @@
         <header id="mainNavigation"></header>
         <h1>Warenkorb</h1>
 
-        <ul class="list-group py-4" id="basket"></ul>
+        <p id="emptyBasket" class="py-4">Dein Warenkorb ist leer</p>
+        <div id="nonEmptyBasket">
+            <ul class="list-group py-4" id="basket"></ul>
+    
+            <h5 class="text-end">
+                Gesamtpreis: <span id="totalPrice">-</span>
+            </h5>
+            <h5 class="text-end py-4" id="basketOrderSection">
+                <button class="btn btn-success" id="orderButton">Bestellung aufgeben</button>
+            </h5>
+            <p class="text-end" id="basketLoginSection">
+                Du musst dich zuerst einloggen, bevor du bestellen kannst: <a href="login.html">Zum Login</a>
+            </p>
+        </div>
 
-        <h5 class="text-end">
-            Gesamtpreis: <span id="totalPrice">-</span>
-        </h5>
-        <h5 class="text-end py-4">
-            <button class="btn btn-success" id="orderButton">Bestellung aufgeben</button>
-        </h5>
     </div>
 
     <script src="js/jquery-3.6.0.min.js"></script>

@@ -80,6 +80,9 @@ class BusinessLogic{
             case "addToBasket":
                 $this->processAddToBasket();
                 break;
+            case "setBasket":
+                $this->processSetBasket();
+                break;
             case "logout":
                 $this->processLogout();
                 break;
@@ -206,6 +209,37 @@ class BusinessLogic{
             $_SESSION["basket"][$productId] = 1;
         } else {
             $_SESSION["basket"][$productId]++;
+        }
+
+        $this->processGetBasket();
+    }
+
+    function processSetBasket() {
+        // check json data
+        if(!isset($_GET["product_id"])){
+            $this->error(400, [], "Bad Request - product_id is required!");
+        }
+        if(!isset($_GET["count"])){
+            $this->error(400, [], "Bad Request - count is required!");
+        }
+
+        $productId = $_GET["product_id"];
+        $count = intval($_GET["count"]);
+        $productsById = $this->dh->getProductsById();
+        if (!isset($productsById[$productId])) {
+            $this->error(400, [], "Bad Request - unknown product_id");
+        }
+
+        session_start();
+        if (!isset($_SESSION["basket"])) {
+            $_SESSION["basket"] = array();
+        }
+        if ($count === 0) {
+            unset($_SESSION["basket"][$productId]);
+        } else if ($count > 0) {
+            $_SESSION["basket"][$productId] = $count;
+        } else {
+            $this->error(400, [], "Bad Request - count is an invalid number!");
         }
 
         $this->processGetBasket();
