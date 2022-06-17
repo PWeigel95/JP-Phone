@@ -1,9 +1,23 @@
 $(document).ready(function() {
+    getProducts();
+
 
     $("#btnCreateProduct").on("click", function() {
         createProduct();
 
     })
+
+    $("#products").on("click", "#btnEditProduct", function() {
+        editProduct();
+
+    })
+
+    $("#products").on("click", "#btnDeleteProduct", function() {
+        deleteProduct();
+
+    })
+
+
 
     function createProduct() {
 
@@ -71,6 +85,71 @@ $(document).ready(function() {
         });
 
     }
+
+    function getProducts() {
+        $.ajax({
+            method: "get",
+            url: API_PATH + "?resource=products", // This calls the backend/index.php file (relative to the .html file)
+            dataType: "json", // We know we want JSON data
+            success: function(data) {
+                // log the products to the console and then set add them to the HTML:
+                console.log(data);
+                setProducts(data);
+            },
+            error: function(error) {
+                console.error(error);
+            },
+        });
+    }
+
+    function setProducts(products) {
+        // first, clear any products (if there are any in the HTML already)
+        clearProducts();
+
+        // then, add all products to the #products div:
+        for (const product of products) {
+            addProduct(product);
+        }
+    }
+
+    function clearProducts() {
+        // clear all existing products in the HTML
+        $("#products").empty();
+    }
+
+    function addProduct(product) {
+        // add the product card to the #products div
+        const productDiv = $(`<div class="col">
+            <div class="card">
+                <img src="${product.image_url}" class="card-img-top product-image" alt="${product.name}">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <div class="p-2 flex-fill">
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="card-text">${product.price}€</p>
+                        </div>
+                        <div class="p-2">
+                            <button id="btnEditProduct" class="btn btn-primary"><i class="bi bi-pencil-square"></i></button>
+                            <button id="btnDeleteProduct" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`);
+
+        $("#products").append(productDiv);
+    }
+
+    function editProduct() {
+        alert("Produkt wird bearbeitet");
+    }
+
+    function deleteProduct() {
+        alert("Produkt wird gelöscht");
+    }
+
+
+
 
 
 

@@ -15,53 +15,43 @@ $(document).ready(function() {
         var repeatpassword = $("#repeatpassword").val();
         var zahlungsinformation_id = $("#zahlungsinformationen option:selected").val();
 
-        if (checkInput()) {
-            var userData = {};
-            userData = {
-                anrede: anrede,
-                vorname: vorname,
-                nachname: nachname,
-                adresse: adresse,
-                plz: plz,
-                ort: ort,
-                email: email,
-                benutzername: benutzername,
-                passwort: passwort,
-                zahlungsinformation_id: zahlungsinformation_id
-            };
-            /*
-            $.each(userData, function(key, value) {
-                console.log(key + value);
-            })
-            */
+        var userData = {};
+        userData = {
+            anrede: anrede,
+            vorname: vorname,
+            nachname: nachname,
+            adresse: adresse,
+            plz: plz,
+            ort: ort,
+            email: email,
+            benutzername: benutzername,
+            passwort: passwort,
+            zahlungsinformation_id: zahlungsinformation_id
+        };
 
+
+        if (checkIfUsernameIsAlreadyTaken(userData) && checkIfPasswordsAreMatching()) {
             createUser(userData);
-
         }
     });
 
-    function checkInput() {
-        checkIfUsernameIsAlreadyTaken();
-        checkIfPasswordsAreMatching() ? true : false;
 
 
-    }
 
-    function checkIfUsernameIsAlreadyTaken() {
+    function checkIfUsernameIsAlreadyTaken(userData) {
 
-        $.ajax({
+        return $.ajax({
             method: "POST",
             datatype: "json",
             url: API_PATH + "?action=checkIfUsernameIsAlreadyTaken",
             data: JSON.stringify(userData),
-            success: function(data) {
-                alert(JSON.stringify(data));
-                location.href = "./login.html";
-
+            success: function() {
+                return true;
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 console.log(JSON.stringify(xhr));
                 console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+                return false;
             },
 
         });
