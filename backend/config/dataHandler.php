@@ -602,6 +602,35 @@ class Datahandler{
         return $orders;
     }
 
+    public function getProductById($productId){
+
+        $db_obj = $this->getDb();
+
+        $sql = "SELECT `name`, `price`, `description`, `image_url` FROM `products` WHERE `product_id` = ? ";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+
+        $stmt->bind_param("i", $productId->productId);
+        $stmt->bind_result(
+            $productName,
+            $productPrice,
+            $productDescription,
+            $productImageUrl,
+        );
+
+        if ($stmt->execute()) {
+
+            if ($stmt->fetch()) {
+
+                $product = new Product($productId->productId,$productName,$productPrice,$productDescription,$productImageUrl);
+
+                return $product;
+            }
+        }
+        $db_obj->close();
+        
+    }
+
     
 }
 

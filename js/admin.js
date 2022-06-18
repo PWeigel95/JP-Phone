@@ -1,5 +1,6 @@
 $(document).ready(function() {
     getProducts();
+    $("#editProduct").hide();
 
 
     $("#btnCreateProduct").on("click", function() {
@@ -16,6 +17,10 @@ $(document).ready(function() {
     $("#products").on("click", "#btnDeleteProduct", function() {
         let productId = $(this).attr("name");
         deleteProduct(productId);
+
+    })
+
+    $("#v-pills-editProducts").on("click", function() {
 
     })
 
@@ -153,6 +158,31 @@ $(document).ready(function() {
     }
 
     function loadEditProductPage(productId) {
+        $("#editProduct").show();
+
+        let productData = {
+            productId: Number(productId)
+        }
+
+        $.ajax({
+            method: "POST",
+            url: API_PATH + "?action=getProductById",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(productData),
+            success: function(product) {
+                alert("Produkt bekommen");
+                loadInputFieldsWithProductData(product);
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
+
+    }
+
+    function loadInputFieldsWithProductData(product) {
 
     }
 

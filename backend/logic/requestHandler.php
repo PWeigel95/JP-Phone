@@ -101,6 +101,9 @@ class BusinessLogic{
             case "checkIfUsernameIsAlreadyTaken":
                 $this->processCheckIfUsernameIsAlreadyTaken($data);
                 break;
+            case "getProductById":
+                $this->processGetProductById($data);
+                break;
             default:
                 echo "Action not found";
         }
@@ -381,6 +384,12 @@ class BusinessLogic{
             $this->error(400, [], "Bad Request - There was an error getting all users");
         }
         $this->success(200, $result);   
+        
+    }
+
+    function processGetProductById($productId)
+    {
+        $this->success(200, $this->dh->getProductById($productId));
         
     }
 
