@@ -1,3 +1,6 @@
+let categoryFilter = null;
+let searchText = "";
+
 function clearProducts() {
     // clear all existing products in the HTML
     $("#products").empty();
@@ -5,7 +8,7 @@ function clearProducts() {
 
 function addProduct(product) {
     // add the product card to the #products div
-    const productDiv = $(`<div class="col">
+    const productDiv = $(`<div class="col" data-category-id="${product.category_id}">
         <div class="card">
             <img src="${product.image_url}" class="card-img-top product-image" alt="${product.name}">
             <div class="card-body">
@@ -42,7 +45,47 @@ function addProduct(product) {
     $("#products").append(productDiv);
 }
 
+function getCategoriesFromProducts(products) {
+    const categories = [];
+    const categoryIds = [];
+    for (const p of products) {
+        if (p.category) {
+            if (!categoryIds.includes(p.category.category_id)) {
+                categoryIds.push(p.category.category_id);
+                categories.push(p.category);
+            }
+        }
+    }
+    categories.sort((a, b) => a.name.localeCompare(b.name));
+    return categories;
+}
+
+function setCategoryFilter(e) {
+    const categoryId = $(this).data("category-id");
+    if (categoryId === "") {
+        categoryFilter = null;
+    } else {
+        categoryFilter = categoryId;
+    }
+    updateProductFilters();
+}
+
+function setCategories(categories) {
+    $('#productCategories').empty();
+    const allProductsButton = $(`<button class="btn btn-primary me-2" data-category-id="">Alle Produkte</button>`);
+    allProductsButton.click(setCategoryFilter);
+    $('#productCategories').append(allProductsButton);
+    for (const c of categories) {
+        const categoryButton = $(`<button class="btn btn-outline-secondary me-2" data-category-id="${c.category_id}">${c.name}</button>`);
+        categoryButton.click(setCategoryFilter);
+        $('#productCategories').append(categoryButton);
+    }
+}
+
 function setProducts(products) {
+    const categories = getCategoriesFromProducts(products);
+    setCategories(categories);
+
     // first, clear any products (if there are any in the HTML already)
     clearProducts();
 
@@ -50,23 +93,33 @@ function setProducts(products) {
     for (const product of products) {
         addProduct(product);
     }
+
+    updateProductFilters();
 }
 
 function filterProducts() {
     $('#produktFilterInput').keyup(function() {
-
-        var searchText = $(this).val().toLowerCase();
-
-        $('#products > div').each(function() {
-
-            var currentLiText = $(this).text().toLowerCase(),
-                showCurrentLi = currentLiText.indexOf(searchText) !== -1;
-
-            $(this).toggle(showCurrentLi);
-
-        })
+        searchText = $(this).val().toLowerCase();
+        updateProductFilters();
     })
-};
+}
+
+function updateProductFilters() {
+    $("#productCategories > button").each(function () {
+        const categoryId = $(this).data("category-id");
+        const categoryMatches = categoryId === categoryFilter || (categoryId === "" && categoryFilter == null);
+        $(this).toggleClass("btn-primary", categoryMatches);
+        $(this).toggleClass("btn-outline-secondary", !categoryMatches);
+    });
+    $('#products > div').each(function() {
+        const categoryId = $(this).data("category-id");
+        const productText = $(this).text().toLowerCase();
+        const textMatches = productText.includes(searchText);
+        const categoryMatches = categoryFilter == null || categoryId === categoryFilter;
+
+        $(this).toggle(textMatches && categoryMatches);
+    })
+}
 
 $(document).ready(function() {
     // When document is ready

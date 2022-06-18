@@ -1,5 +1,36 @@
 $(document).ready(function() {
     getProducts();
+    getCategories();
+
+    function setCategories(categories) {
+        categories.sort((a, b) => a.name.localeCompare(b.name));
+        $("#inputCategory").empty();
+        $("#inputCategory").append($(`<option value="">Keine</option>`));
+        for (const c of categories) {
+            $("#inputCategory").append($(`<option value="${c.category_id}">${c.name}</option>`));
+        }
+        $("#editCategory").empty();
+        $("#editCategory").append($(`<option value="">Keine</option>`));
+        for (const c of categories) {
+            $("#editCategory").append($(`<option value="${c.category_id}">${c.name}</option>`));
+        }
+    }
+    function getCategories() {
+        $.ajax({
+            method: "get",
+            url: API_PATH + "?resource=categories", // This calls the backend/index.php file (relative to the .html file)
+            dataType: "json", // We know we want JSON data
+            success: function(data) {
+                // log the categories to the console and then set add them to the HTML:
+                console.log(data);
+                setCategories(data);
+            },
+            error: function(error) {
+                console.error(error);
+            },
+        });
+    }
+
     $("#editProduct").hide();
 
 
@@ -32,8 +63,8 @@ $(document).ready(function() {
             productName: $("#editInputProduktname").val(),
             productDescription: $("#editTextareaBeschreibung").val(),
             productPrice: $("#editInputPreis").val(),
-            productImageUrl: $("#editProductImage").attr("src")
-
+            productImageUrl: $("#editProductImage").attr("src"),
+            productCategory: $("#editCategory").val(),
         }
         updateProduct(product);
 
@@ -47,12 +78,14 @@ $(document).ready(function() {
         let produktBeschreibung = $("#textareaBeschreibung").val();
         let produktPreis = $("#inputPreis").val();
         let produktFotoUrl = $("#fileProduktFoto").val();
+        let produktKategorie = $("#inputCategory").val();
 
         let produkt = {
             produktName: produktName,
             produktBeschreibung: produktBeschreibung,
             produktPreis: produktPreis,
-            produktFotoUrl: produktFotoUrl
+            produktFotoUrl: produktFotoUrl,
+            produktKategorie: produktKategorie
         }
 
         $.ajax({
@@ -219,6 +252,7 @@ $(document).ready(function() {
         $("#editInputProduktname").val(product.name);
         $("#editTextareaBeschreibung").val(product.description);
         $("#editInputPreis").val(product.price);
+        $("#editCategory").val(product.category_id || "");
         $("#editProductImage").attr("src", product.image_url);
 
         $("#btnEditProduct").attr("name", product.product_id);

@@ -49,6 +49,9 @@ class BusinessLogic{
             case "products":
                 $this->processGetProducts();
                 break;
+            case "categories":
+                $this->processGetCategories();
+                break;
             case "basket":
                 $this->processGetBasket();
                 break;
@@ -156,6 +159,10 @@ class BusinessLogic{
 
     function processGetProducts() {
         $this->success(200, $this->dh->getProducts());
+    }
+
+    function processGetCategories() {
+        $this->success(200, $this->dh->getCategories());
     }
 
     function getBasketData($idsInBasket) {

@@ -24,6 +24,26 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `categories`
+--
+
+CREATE TABLE `categories` (
+  `category_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `categories`
+--
+
+INSERT INTO `categories` (`category_id`, `name`) VALUES
+(1, 'Apple'),
+(2, 'Xiaomi'),
+(3, 'Samsung');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `orders`
 --
 
@@ -65,19 +85,21 @@ CREATE TABLE `products` (
   `name` varchar(200) NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `description` text NOT NULL,
-  `image_url` varchar(200) NOT NULL
+  `image_url` varchar(200) NOT NULL,
+  `category_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Daten für Tabelle `products`
 --
 
-INSERT INTO `products` (`product_id`, `name`, `price`, `description`, `image_url`) VALUES
-(1, 'Apple iPhone 11', '699.00', 'Apple iPhone 11', 'res/img/products/Apple iPhone 11.png'),
-(2, 'Apple iPhone 12', '849.00', 'Apple iPhone 12', 'res/img/products/Apple iPhone 11.png'),
-(3, 'Apple iPhone 13', '1049.00', 'Apple iPhone 13', 'res/img/products/Apple iPhone 11.png'),
-(4, 'Apple 5', '299.99', 'Apple 5', ''),
-(5, 'Apple 4', '199.00', 'Apple 4', '');
+INSERT INTO `products` (`product_id`, `name`, `price`, `description`, `image_url`, `category_id`) VALUES
+(1, 'Apple iPhone 11', '699.00', 'Apple iPhone 11', 'res/img/products/Apple iPhone 11.png', 1),
+(2, 'Apple iPhone 12', '849.00', 'Apple iPhone 12', 'res/img/products/Apple iPhone 11.png', 1),
+(3, 'Apple iPhone 13', '1049.00', 'Apple iPhone 13', 'res/img/products/Apple iPhone 11.png', 1),
+(4, 'Apple 5', '299.99', 'Apple 5', '', 1),
+(5, 'Apple 4', '199.00', 'Apple 4', '', 1),
+(6, 'Samsung Test', '400.00', 'Samsung Test', '', 3);
 
 -- --------------------------------------------------------
 
@@ -132,6 +154,12 @@ INSERT INTO `users` (`user_id`, `anrede`, `email`, `vorname`, `nachname`, `adres
 --
 
 --
+-- Indizes für die Tabelle `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`category_id`);
+
+--
 -- Indizes für die Tabelle `orders`
 --
 ALTER TABLE `orders`
@@ -164,6 +192,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT für exportierte Tabellen
 --
+
+--
+-- AUTO_INCREMENT für Tabelle `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `orders`
