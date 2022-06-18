@@ -167,8 +167,28 @@ $(document).ready(function() {
         loadEditProductPage(productId);
     }
 
-    function deleteProduct() {
+    function deleteProduct(productId) {
         alert("Produkt wird gelöscht");
+
+        let productData = {
+            productId: Number(productId)
+        }
+
+        $.ajax({
+            method: "DELETE",
+            url: API_PATH + "?action=deleteProduct",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(productData),
+            success: function() {
+                alert("Produkt wurde gelöscht");
+                getProducts();
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
     }
 
     function loadEditProductPage(productId) {
@@ -222,6 +242,8 @@ $(document).ready(function() {
         });
 
     }
+
+
 
 
 

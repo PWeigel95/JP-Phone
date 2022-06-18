@@ -28,6 +28,9 @@ class BusinessLogic{
             case "PUT":
                 $this->processPut();
                 break;
+            case "DELETE":
+                $this->processDelete();
+                break;
             default:
                 echo "Method not found";
         }
@@ -131,6 +134,24 @@ class BusinessLogic{
                 echo "Action not found";
         }
 
+    }
+
+    function processDelete(){
+
+        if (!isset($_GET['action'])) {
+            $this->error(400, [], "Bad Request - no action");
+        }
+
+        $data = json_decode(file_get_contents("php://input"));
+
+        switch ($_GET['action']) {
+            case "deleteProduct":
+                $this->processDeleteProduct($data);
+                break;
+            default:
+                echo "Action not found";
+        }
+        
     }
 
     function processGetProducts() {
@@ -399,6 +420,13 @@ class BusinessLogic{
     function processUpdateProduct($productData){
         if (($result = $this->dh->updateProduct($productData)) === false) {
             $this->error(400, [], "Bad Request - There was an error while updating the product!");
+        }
+        $this->success(200, $result);
+    }
+
+    function processDeleteProduct($productData){
+        if (($result = $this->dh->deleteProduct($productData)) === false) {
+            $this->error(400, [], "Bad Request - There was an error while deleting the product!");
         }
         $this->success(200, $result);
     }

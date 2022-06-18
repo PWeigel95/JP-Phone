@@ -664,6 +664,34 @@ class Datahandler{
         
     }
 
+    public function deleteProduct($productData){
+
+        $db_obj = $this->getDb();
+        
+        // run the query
+        $sql = "DELETE FROM `products` WHERE `product_id` = ? ";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+        $stmt->bind_param("i", $productData->productId);
+
+        if($stmt->execute()){            
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return true;           
+        }
+        else{
+            echo htmlspecialchars($stmt->error);
+            //close the statement
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return false;
+        
+        }
+        
+    }
+
     
 }
 
