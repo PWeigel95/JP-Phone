@@ -124,6 +124,9 @@ class BusinessLogic{
             case "changePassword":
                 $this->processChangePassword($data);
                 break;
+            case "updateProduct":
+                $this->processUpdateProduct($data);
+                break;
             default:
                 echo "Action not found";
         }
@@ -391,6 +394,13 @@ class BusinessLogic{
     {
         $this->success(200, $this->dh->getProductById($productId));
         
+    }
+
+    function processUpdateProduct($productData){
+        if (($result = $this->dh->updateProduct($productData)) === false) {
+            $this->error(400, [], "Bad Request - There was an error while updating the product!");
+        }
+        $this->success(200, $result);
     }
 
     private function success(int $code, $obj) {

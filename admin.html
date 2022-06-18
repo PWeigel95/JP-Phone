@@ -40,17 +40,18 @@
                     </div>
                     <div class="row row-cols-5 gy-4" id="products"></div>
                     <div class="container" id="editProduct">
+                        <img src="" class="img-fluid" alt="Product image" id="editProductImage">
                         <div class="row mt-3">
-                            <div class="col-md-12"><label class="labels">Name</label><input type="text" id="inputProduktname" class="form-control" value=""></div>
-                            <div class="col-md-12"><label class="labels">Beschreibung</label><textarea id="textareaBeschreibung" class="form-control" value="" rows="5"></textarea></div>
-                            <div class="col-md-12"><label class="labels">Preis</label><input type="number" id="inputPreis" class="form-control" value=""></div>
+                            <div class="col-md-12"><label class="labels">Name</label><input type="text" id="editInputProduktname" class="form-control" value=""></div>
+                            <div class="col-md-12"><label class="labels">Beschreibung</label><textarea id="editTextareaBeschreibung" class="form-control" value="" rows="5"></textarea></div>
+                            <div class="col-md-12"><label class="labels">Preis</label><input type="number" id="editInputPreis" class="form-control" value=""></div>
                         </div>
                         <div class="mb-3">
                             <label for="formFile" class="form-label">Produktfoto hochladen</label>
                             <input class="form-control" type="file" accept="image/*" id="fileProduktFoto">
                         </div>
                         <div class="mt-5 text-center">
-                            <button class="btn btn-primary profile-button" type="button" id="btnCreateProduct">Erstellen</button>
+                            <button class="btn btn-primary profile-button" type="button" id="btnEditProduct">Speichern</button>
                         </div>
                     </div>
                 </div>

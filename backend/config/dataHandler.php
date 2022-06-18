@@ -631,6 +631,39 @@ class Datahandler{
         
     }
 
+    public function updateProduct($productData){
+
+        $db_obj = $this->getDb();
+        
+        // run the query
+        $sql = "UPDATE `products` SET `name` = ?, `price` = ?, `description` = ?, `image_url` = ? WHERE `product_id` = ? ";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+        $stmt->bind_param("sdssi",
+        $productData->productName, 
+        $productData->productPrice, 
+        $productData->productDescription,
+        $productData->productImageUrl, 
+        $productData->productId);
+
+        if($stmt->execute()){            
+                $stmt->close();
+                //close the connection
+                $db_obj->close();
+                return true;           
+        }
+        else{
+            echo htmlspecialchars($stmt->error);
+            //close the statement
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return false;
+            
+        }
+        
+    }
+
     
 }
 

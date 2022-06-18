@@ -24,6 +24,21 @@ $(document).ready(function() {
 
     })
 
+    $("#btnEditProduct").on("click", function() {
+        let productId = $(this).attr("name");
+
+        let product = {
+            productId: productId,
+            productName: $("#editInputProduktname").val(),
+            productDescription: $("#editTextareaBeschreibung").val(),
+            productPrice: $("#editInputPreis").val(),
+            productImageUrl: $("#editProductImage").attr("src")
+
+        }
+        updateProduct(product);
+
+    })
+
 
 
     function createProduct() {
@@ -148,7 +163,6 @@ $(document).ready(function() {
     }
 
     function editProduct(productId) {
-        alert("Produkt wird bearbeitet");
         clearProducts();
         loadEditProductPage(productId);
     }
@@ -170,7 +184,6 @@ $(document).ready(function() {
             dataType: "json", // We know we want JSON data
             data: JSON.stringify(productData),
             success: function(product) {
-                alert("Produkt bekommen");
                 loadInputFieldsWithProductData(product);
 
             },
@@ -183,6 +196,30 @@ $(document).ready(function() {
     }
 
     function loadInputFieldsWithProductData(product) {
+        $("#editInputProduktname").val(product.name);
+        $("#editTextareaBeschreibung").val(product.description);
+        $("#editInputPreis").val(product.price);
+        $("#editProductImage").attr("src", product.image_url);
+
+        $("#btnEditProduct").attr("name", product.product_id);
+
+    }
+
+    function updateProduct(product) {
+        $.ajax({
+            method: "PUT",
+            url: API_PATH + "?action=updateProduct",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(product),
+            success: function() {
+                alert("Produkt wurde geupdated");
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
 
     }
 
