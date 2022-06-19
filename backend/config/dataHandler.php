@@ -650,7 +650,7 @@ class Datahandler{
         }
 
         foreach ($orders as $order) {
-            $this->fillOrderProducts($db_obj, $order);
+            $this->fillOrderProducts($order);
         }
         
         // close the connection
