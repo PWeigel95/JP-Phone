@@ -1,6 +1,7 @@
 $(document).ready(function() {
     getProducts();
     $("#editProduct").hide();
+    listUsers();
 
 
     $("#btnCreateProduct").on("click", function() {
@@ -20,9 +21,6 @@ $(document).ready(function() {
 
     })
 
-    $("#v-pills-editProducts").on("click", function() {
-
-    })
 
     $("#btnEditProduct").on("click", function() {
         let productId = $(this).attr("name");
@@ -74,13 +72,6 @@ $(document).ready(function() {
 
     }
 
-    function loadEditCustomerPage() {
-
-    }
-
-    function loadEditVoucherPage() {
-
-    }
 
     function clearInputs() {
         $("#inputProduktname").val("");
@@ -90,14 +81,23 @@ $(document).ready(function() {
 
     }
 
-    function getAllUsers() {
+    function listUsers() {
 
         $.ajax({
             method: "GET",
-            url: API_PATH + "?action=getAllUsers",
+            url: API_PATH + "?resource=getAllUsers",
             dataType: "json", // We know we want JSON data
-            success: function() {
-                alert("Alle User bekommen!");
+            success: function(users) {
+                for (const user of users) {
+                    $("#customersTable").append(`<tr>
+                        <td>${user.benutzername}</td>
+                        <td>${user.email}</td>
+                        <td>ja</td>
+                        <td><button type='button' id='btnShowOrders' class='btn btn-primary'>Bestellungen anzeigen</button></td>
+                        <td><button type='button' id='btnEditUser' class='btn btn-primary'>User bearbeiten</button></td>
+                    </tr>`);
+                }
+
 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -110,7 +110,7 @@ $(document).ready(function() {
 
     function getProducts() {
         $.ajax({
-            method: "get",
+            method: "GET",
             url: API_PATH + "?resource=products", // This calls the backend/index.php file (relative to the .html file)
             dataType: "json", // We know we want JSON data
             success: function(data) {
