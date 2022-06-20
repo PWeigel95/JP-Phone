@@ -5,12 +5,6 @@ $(document).ready(function() {
     loadProfileData();
     listOrders();
 
-    $("#btnGenerateInvoice").on("click", function(event) {
-
-        generateInvoice();
-
-    })
-
     $("#btnSaveProfileSettings").on("click", function() {
 
         updateUserProfile();
@@ -33,12 +27,16 @@ $(document).ready(function() {
             success: function(data) {
                 console.log(data);
                 for (const order of data) {
-                    $("#myOrdersTable").append(`<tr>
+                    const tr = $(`<tr>
                         <td>${order.order_id}</td>
                         <td>${order.creation_date}</td>
                         <td>${order.total_price} €</td>
-                        <td><button type='button' id='btnGenerateInvoice' class='btn btn-primary'>Rechnung anzeigen</button></td>
+                        <td><button class='btn btn-primary'>Details einsehen/drucken</button></td>
                     </tr>`);
+                    $("button", tr).click(() => {
+                        window.open("invoice.html?order_id=" + order.order_id, "Rechnung", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes");
+                    });
+                    $("#myOrdersTable").append(tr);
                 }
             },
             error: function(xhr, ajaxOptions, thrownError) {

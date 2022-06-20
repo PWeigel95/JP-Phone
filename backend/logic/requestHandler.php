@@ -49,6 +49,9 @@ class BusinessLogic{
             case "products":
                 $this->processGetProducts();
                 break;
+            case "categories":
+                $this->processGetCategories();
+                break;
             case "basket":
                 $this->processGetBasket();
                 break;
@@ -57,6 +60,9 @@ class BusinessLogic{
                 break;
             case "orders":
                 $this->processGetOrders();
+                break;
+            case "order":
+                $this->processGetOrder();
                 break;
             default:
                 echo "Resource not found";
@@ -156,6 +162,10 @@ class BusinessLogic{
 
     function processGetProducts() {
         $this->success(200, $this->dh->getProducts());
+    }
+
+    function processGetCategories() {
+        $this->success(200, $this->dh->getCategories());
     }
 
     function getBasketData($idsInBasket) {
@@ -398,6 +408,27 @@ class BusinessLogic{
         if ($user_id) {
             $orders = $this->dh->getOrdersForUser($user_id);
             $this->success(200, $orders);
+        } else {
+            $this->error(400, [], "Bad Request - Not logged in");
+        }
+    }
+
+    function processGetOrder() {
+        session_start();
+        if (!isset($_GET["order_id"])) {
+            $this->error(400, [], "Bad Request - No order_id");
+        }
+
+        $user_id = $this->getCurrentUserId();
+        if ($user_id) {
+            $orders = $this->dh->getOrdersForUser($user_id);
+            foreach ($orders as $order) {
+                if ($order->order_id == $_GET["order_id"]) {
+                    $this->success(200, $order);
+                    exit;
+                }
+            }
+            $this->error(400, [], "Bad Request - Order not found");
         } else {
             $this->error(400, [], "Bad Request - Not logged in");
         }

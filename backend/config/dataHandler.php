@@ -3,6 +3,7 @@
 require_once("./models/product.class.php");
 require_once("./models/order.class.php");
 require_once("./models/order_product.class.php");
+require_once("./models/category.class.php");
 
 class Datahandler{
 
@@ -32,7 +33,7 @@ class Datahandler{
         $db_obj = $this->getDb();
 
         // run the query
-        $query = "SELECT product_id, name, price, description, image_url FROM products ORDER BY product_id ASC";
+        $query = "SELECT p.product_id, p.name, p.price, p.description, p.image_url, p.category_id, c.category_id, c.name as category_name FROM products p LEFT JOIN categories c ON (p.category_id = c.category_id) ORDER BY p.product_id ASC";
         $result = $db_obj->query($query);
         if (!$result) $this->handleError($db_obj);
 
@@ -44,8 +45,15 @@ class Datahandler{
                 $row['name'],
                 $row['price'],
                 $row['description'],
-                $row['image_url']
+                $row['image_url'],
+                $row['category_id']
             );
+            if ($row['category_id'] != null) {
+                $product->category = new Category(
+                    $row['category_id'],
+                    $row['category_name'],
+                );
+            }
             // and add it to the array
             array_push($products, $product);
         }
@@ -55,6 +63,36 @@ class Datahandler{
 
         // finally return all products
         return $products;
+    }
+
+    public function getCategories() {
+        // Prepare the array we will return in the end:
+        $categories = array();
+        
+        // connect to mysql:
+        $db_obj = $this->getDb();
+
+        // run the query
+        $query = "SELECT category_id, name FROM categories ORDER BY category_id ASC";
+        $result = $db_obj->query($query);
+        if (!$result) $this->handleError($db_obj);
+
+        // loop through all results
+        while ($row = $result->fetch_assoc()) {
+            // convert it into a Category instance
+            $category = new Category(
+                $row['category_id'],
+                $row['name'],
+            );
+            // and add it to the array
+            array_push($categories, $category);
+        }
+        
+        // close the connection
+        $db_obj->close();
+
+        // finally return all categories
+        return $categories;
     }
 
     public function getProductsById() {
@@ -332,15 +370,21 @@ class Datahandler{
 
         $db_obj = $this->getDb();
 
-        $sql = "INSERT INTO `products`(`name`, `price`, `description`, `image_url`) VALUES (?,?,?,?)";
+        $sql = "INSERT INTO `products`(`name`, `price`, `description`, `image_url`, `category_id`) VALUES (?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
-        $stmt->bind_param("sdss", 
+        $category_id = $productData->produktKategorie;
+        if ($category_id === "") {
+            $category_id = null;
+        }
+
+        $stmt->bind_param("sdssi", 
         $productData->produktName,
         $productData->produktPreis,
         $productData->produktBeschreibung, 
-        $productData->produktFotoUrl);
+        $productData->produktFotoUrl,
+        $category_id);
 
         if($stmt->execute()){            
             $stmt->close();
@@ -498,13 +542,15 @@ class Datahandler{
         return true;
     }
 
-    public function fillOrderProducts($db_obj, $order) {
+    public function fillOrderProducts($order) {
+        $db_obj = $this->getDb();
         // run the query
-        $sql = "SELECT op.order_product_id, op.order_id, op.product_id, op.amount, op.price_per_item, op.total_price, p.product_id, p.name, p.price, p.description, p.image_url FROM order_products op LEFT JOIN products p ON (op.product_id = p.product_id) WHERE op.order_id = ?";
+        $sql = "SELECT op.order_product_id, op.order_id, op.product_id, op.amount, op.price_per_item, op.total_price, p.product_id, p.name, p.price, p.description, p.image_url, p.category_id, c.category_id, c.name FROM order_products op LEFT JOIN products p ON (op.product_id = p.product_id) LEFT JOIN categories c ON (p.category_id = c.category_id) WHERE op.order_id = ?";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
         $stmt->bind_param("i", $order->order_id);
+
         $stmt->bind_result(
             $op_order_product_id,
             $op_order_id,
@@ -517,6 +563,9 @@ class Datahandler{
             $p_price,
             $p_description,
             $p_image_url,
+            $p_category_id,
+            $c_category_id,
+            $c_name,
         );
 
         if (!$stmt->execute()) $this->handleError($db_obj);
@@ -524,13 +573,21 @@ class Datahandler{
         // loop through all results
         while ($stmt->fetch()) {
             // convert it into a Order instance
+
             $product = new Product(
                 $p_product_id,
                 $p_name,
                 $p_price,
                 $p_description,
                 $p_image_url,
+                $p_category_id,
             );
+            if ($c_category_id != null) {
+                $product->category = new Category(
+                    $c_category_id,
+                    $c_name,
+                );
+            }
             $order_product = new OrderProduct(
                 $op_order_product_id,
                 $op_order_id,
@@ -544,6 +601,7 @@ class Datahandler{
             array_push($order->order_products, $order_product);
         }
         $stmt->close();
+        $db_obj->close();
     }
 
     public function getOrdersForUser($user_id) {
@@ -592,7 +650,7 @@ class Datahandler{
         }
 
         foreach ($orders as $order) {
-            $this->fillOrderProducts($db_obj, $order);
+            $this->fillOrderProducts($order);
         }
         
         // close the connection
@@ -606,7 +664,7 @@ class Datahandler{
 
         $db_obj = $this->getDb();
 
-        $sql = "SELECT `name`, `price`, `description`, `image_url` FROM `products` WHERE `product_id` = ? ";
+        $sql = "SELECT p.name, p.price, p.description, p.image_url, p.category_id, c.category_id, c.name FROM products p LEFT JOIN categories c ON (p.category_id = c.category_id) WHERE p.product_id = ?";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
@@ -616,13 +674,28 @@ class Datahandler{
             $productPrice,
             $productDescription,
             $productImageUrl,
+            $productCategoryId,
+            $categoryId,
+            $categoryName,
         );
 
         if ($stmt->execute()) {
 
             if ($stmt->fetch()) {
-
-                $product = new Product($productId->productId,$productName,$productPrice,$productDescription,$productImageUrl);
+                $product = new Product(
+                    $productId->productId,
+                    $productName,
+                    $productPrice,
+                    $productDescription,
+                    $productImageUrl,
+                    $productCategoryId,
+                );
+                if ($categoryId != null) {
+                    $product->category = new Category(
+                        $categoryId,
+                        $categoryName,
+                    );
+                }
 
                 return $product;
             }
@@ -636,14 +709,21 @@ class Datahandler{
         $db_obj = $this->getDb();
         
         // run the query
-        $sql = "UPDATE `products` SET `name` = ?, `price` = ?, `description` = ?, `image_url` = ? WHERE `product_id` = ? ";
+        $sql = "UPDATE `products` SET `name` = ?, `price` = ?, `description` = ?, `image_url` = ?, `category_id` = ? WHERE `product_id` = ? ";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
-        $stmt->bind_param("sdssi",
+
+        $category_id = $productData->productCategory;
+        if ($category_id === "") {
+            $category_id = null;
+        }
+
+        $stmt->bind_param("sdssii",
         $productData->productName, 
         $productData->productPrice, 
         $productData->productDescription,
         $productData->productImageUrl, 
+        $category_id, 
         $productData->productId);
 
         if($stmt->execute()){            

@@ -117,5 +117,10 @@ function buildNavbar() {
 
 $(document).ready(function() {
     buildNavbar();
-    $("body").fadeIn();
+    const body = $("body");
+    if (!body.hasClass("no-fadein")) {
+        $("body").fadeIn();        
+    } else {
+        $("body").show();
+    }
 });
