@@ -32,7 +32,6 @@ $(document).ready(function() {
             data: JSON.stringify(loginData),
             success: function(data) {
                 if (Object.keys(data).length > 0) {
-                    alert(data.user_status);
                     if (data.user_status == "aktiv") {
                         window.localStorage.setItem('anrede', data["anrede"]);
                         window.localStorage.setItem('username', data["benutzername"]);
