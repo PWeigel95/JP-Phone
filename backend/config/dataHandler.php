@@ -112,13 +112,13 @@ class Datahandler{
         $db_obj = $this->getDb();
 
         // run the query
-        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`   from `users` where `benutzername` = ?";
+        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`, `user_status`  from `users` where `benutzername` = ?";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
         $stmt->bind_param("s", $loginData->benutzername);
 
-        $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $anrede, $email, $vorname, $nachname, $adresse, $plz, $ort, $zahlungsinformation_id,$role_id, $erstellungsdatum);
+        $stmt->bind_result($user_id, $benutzername, $aktuellesPassword, $anrede, $email, $vorname, $nachname, $adresse, $plz, $ort, $zahlungsinformation_id,$role_id, $erstellungsdatum,$user_status);
 
         if ($stmt->execute()) {
 
@@ -130,7 +130,7 @@ class Datahandler{
 
                     session_start();
 
-                    $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername, $aktuellesPassword, $zahlungsinformation_id, $role_id, $erstellungsdatum);
+                    $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername, $aktuellesPassword, $zahlungsinformation_id, $role_id, $erstellungsdatum, $user_status);
 
                     $_SESSION["user"]["user_id"] = $user_id;
                     $_SESSION["user"]["benutzername"] = $benutzername;    
@@ -153,7 +153,7 @@ class Datahandler{
         $db_obj = $this->getDb();
 
         // run the query
-        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum` from `users` where `user_id` = ?";
+        $sql = "SELECT `user_id`, `benutzername`,`passwort`, `anrede`, `email`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `zahlungsinformation_id`, `role_id`, `erstellungsdatum`,`user_status`  from `users` where `user_id` = ?";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
@@ -175,7 +175,8 @@ class Datahandler{
                     $row["passwort"],
                     $row["zahlungsinformation_id"],
                     $row["role_id"],
-                    $row["erstellungsdatum"]
+                    $row["erstellungsdatum"],
+                    $row["user_status"]
                 );
             } else {
                 return null;
@@ -189,11 +190,11 @@ class Datahandler{
     public function createUser($userdata){
         $db_obj = $this->getDb();
 
-        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `erstellungsdatum`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+        $sql = "INSERT INTO `users`(`anrede`, `vorname`, `nachname`, `adresse`,`plz`, `ort`,`email`,`benutzername`,`passwort`, `zahlungsinformation_id`,`role_id`, `erstellungsdatum`,`user_status`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 
-        $stmt->bind_param("sssssssssiis", 
+        $stmt->bind_param("sssssssssiiss", 
         $userdata->anrede, 
         $userdata->vorname, 
         $userdata->nachname, 
@@ -205,7 +206,8 @@ class Datahandler{
         $userdata->passwort,
         $userdata->zahlungsinformation_id,
         $userdata->role_id,
-        $userdata->erstellungsdatum);
+        $userdata->erstellungsdatum,
+        $userdata->user_status);
 
         if($stmt->execute()){
             $stmt->close();
@@ -293,7 +295,7 @@ class Datahandler{
 
             if ($stmt->fetch()) {
 
-                $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername,'','','','');
+                $user = new User($anrede, $vorname, $nachname, $adresse, $plz, $ort, $email, $benutzername,'','','','','');
 
                 return $user;
             }
@@ -413,7 +415,7 @@ class Datahandler{
         $db_obj = $this->getDb();
 
         // run the query
-        $query = "SELECT `anrede`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `email`, `benutzername`,`role_id`  FROM users ORDER BY `user_id` ";
+        $query = "SELECT `anrede`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `email`, `benutzername`,`role_id`,`user_status`  FROM users ORDER BY `user_id` ";
         $result = $db_obj->query($query);
         if (!$result) $this->handleError($db_obj);
 
@@ -432,7 +434,8 @@ class Datahandler{
                 '',
                 '',
                 $row['role_id'],
-                ''              
+                '',
+                $row['user_status']              
             );
             // and add it to the array
             array_push($users, $user);
@@ -771,6 +774,92 @@ class Datahandler{
         }
         
     }
+
+    public function getOrdersByUsername($username){
+
+         // Prepare the array we will return in the end:
+         $orders = array();
+        
+         // connect to mysql:
+         $db_obj = $this->getDb();
+ 
+         // run the query
+         $sql = "SELECT order_id, orders.user_id, total_price, creation_date, billing_name, billing_address, billing_zipcode, billing_place, invoice_id FROM orders JOIN users ON orders.user_id = users.user_id  WHERE users.benutzername = ? ORDER BY creation_date DESC";
+         $stmt = $db_obj->prepare($sql);
+         if (!$stmt) $this->handleError($db_obj);
+ 
+         $stmt->bind_param("s", $username->username);
+         $stmt->bind_result(
+             $o_order_id,
+             $o_user_id,
+             $o_total_price,
+             $o_creation_date,
+             $o_billing_name,
+             $o_billing_address,
+             $o_billing_zipcode,
+             $o_billing_place,
+             $o_invoice_id,
+         );
+ 
+         $stmt->execute();
+         // loop through all results
+         while ($stmt->fetch()) {
+             // convert it into a Order instance
+             $order = new Order(
+                 $o_order_id,
+                 $o_user_id,
+                 $o_total_price,
+                 $o_creation_date,
+                 $o_billing_name,
+                 $o_billing_address,
+                 $o_billing_zipcode,
+                 $o_billing_place,
+                 $o_invoice_id,
+             );
+ 
+             // and add it to the array
+             array_push($orders, $order);
+         }
+ 
+         foreach ($orders as $order) {
+             $this->fillOrderProducts($order);
+         }
+         
+         // close the connection
+         $db_obj->close();
+ 
+         // finally return all orders
+         return $orders;
+    }
+
+    public function updateUserStatus($username){
+
+        $db_obj = $this->getDb();
+        
+        // run the query
+        $sql = "UPDATE `users` SET `user_status` = CASE WHEN `user_status` = 'aktiv' THEN 'inaktiv' WHEN `user_status` = 'inaktiv' THEN 'aktiv' END  WHERE `benutzername` = ? ";
+        $stmt = $db_obj->prepare($sql);
+        if (!$stmt) $this->handleError($db_obj);
+        $stmt->bind_param("s", $username->username);
+
+        if($stmt->execute()){            
+                $stmt->close();
+                //close the connection
+                $db_obj->close();
+                return true;           
+        }
+        else{
+            echo htmlspecialchars($stmt->error);
+            //close the statement
+            $stmt->close();
+            //close the connection
+            $db_obj->close();
+            return false;
+            
+        }
+    }
+    
+    
 
     
 }

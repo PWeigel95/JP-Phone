@@ -24,15 +24,18 @@ small {
 .basket-product-name {
     flex: 1;
 }
+
 .basket-product-count {
     flex: 1;
     max-width: 130px;
 }
+
 .basket-product-price-per-item {
     max-width: 180px;
     flex: 1;
     text-align: right;
 }
+
 .basket-product-price {
     max-width: 180px;
     flex: 1;
@@ -45,5 +48,9 @@ p.loginError {
 }
 
 body {
+    display: none;
+}
+
+#customerOrdersTableDiv {
     display: none;
 }

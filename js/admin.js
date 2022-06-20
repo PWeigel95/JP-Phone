@@ -15,6 +15,7 @@ $(document).ready(function() {
             $("#editCategory").append($(`<option value="${c.category_id}">${c.name}</option>`));
         }
     }
+
     function getCategories() {
         $.ajax({
             method: "get",
@@ -68,6 +69,18 @@ $(document).ready(function() {
 
     })
 
+    $("#v-pills-editCustomers").on("click", "#btnShowOrders", function() {
+        let username = $(this).attr("name");
+        showOrders(username);
+
+    })
+
+    $("#v-pills-editCustomers").on("click", "#btnEditUser", function() {
+        let username = $(this).attr("name");
+        changeUserStatus(username);
+
+    })
+
 
 
     function createProduct() {
@@ -115,6 +128,7 @@ $(document).ready(function() {
     }
 
     function listUsers() {
+        $("#customersTable").empty();
 
         $.ajax({
             method: "GET",
@@ -125,9 +139,9 @@ $(document).ready(function() {
                     $("#customersTable").append(`<tr>
                         <td>${user.benutzername}</td>
                         <td>${user.email}</td>
-                        <td>ja</td>
-                        <td><button type='button' id='btnShowOrders' class='btn btn-primary'>Bestellungen anzeigen</button></td>
-                        <td><button type='button' id='btnEditUser' class='btn btn-primary'>User bearbeiten</button></td>
+                        <td>${user.user_status}</td>
+                        <td><button type='button' id='btnShowOrders' name=${user.benutzername} class='btn btn-primary'>Bestellungen anzeigen</button></td>
+                        <td><button type='button' id='btnEditUser' name=${user.benutzername} class='btn btn-primary'>Status ändern</button></td>
                     </tr>`);
                 }
 
@@ -276,6 +290,80 @@ $(document).ready(function() {
         });
 
     }
+
+    function showOrders(username) {
+
+        let userData = {
+            username: username
+        }
+
+        $.ajax({
+            method: "POST",
+            url: API_PATH + "?action=getOrdersByUsername",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(userData),
+            success: function(orders) {
+                loadPageWithOrdersData(orders);
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
+
+
+
+    }
+
+    function loadPageWithOrdersData(orders) {
+
+        $("#customerListDiv").hide();
+        $("#customerOrdersTableDiv").show();
+
+        for (const order of orders) {
+            const tr = $(`<tr>
+                <td>${order.order_id}</td>
+                <td>${order.creation_date}</td>
+                <td>${order.total_price} €</td>
+                <td><button class='btn btn-primary'>Details einsehen/drucken</button></td>
+            </tr>`);
+            $("button", tr).click(() => {
+                window.open("invoice.html?order_id=" + order.order_id, "Rechnung", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes");
+            });
+            $("#customerOrdersTable").append(tr);
+        }
+
+
+    }
+
+    function changeUserStatus(username) {
+
+        let userData = {
+            username: username
+        }
+
+        $.ajax({
+            method: "POST",
+            url: API_PATH + "?action=updateUserStatus",
+            dataType: "json", // We know we want JSON data
+            data: JSON.stringify(userData),
+            success: function() {
+                alert("User Status wurde geändert");
+                listUsers();
+
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(JSON.stringify(xhr));
+                console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
+            },
+        });
+
+    }
+
+
+
+
 
 
 

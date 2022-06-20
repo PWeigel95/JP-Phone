@@ -113,6 +113,12 @@ class BusinessLogic{
             case "getProductById":
                 $this->processGetProductById($data);
                 break;
+            case "getOrdersByUsername":
+                $this->processGetOrdersByUsername($data);
+                break;
+            case "updateUserStatus":
+                $this->processUpdateUserStatus($data);
+                break;
             default:
                 echo "Action not found";
         }
@@ -337,7 +343,9 @@ class BusinessLogic{
         $date = new DateTime();
         $erstellungsdatum = $date->format("d-M-Y H:i:s");
 
-        $user = new User($data->anrede,$data->vorname,$data->nachname, $data->adresse, $data->plz, $data->ort, $data->email, $data->benutzername, $data->passwort, $data->zahlungsinformation_id,$role_id,$erstellungsdatum);
+        $user_status = 'aktiv';
+
+        $user = new User($data->anrede,$data->vorname,$data->nachname, $data->adresse, $data->plz, $data->ort, $data->email, $data->benutzername, $data->passwort, $data->zahlungsinformation_id,$role_id,$erstellungsdatum,$user_status);
 
         if (($result = $this->dh->createUser($user)) === false) {
             $this->error(400, [], "Bad Request - error saving user");
@@ -458,6 +466,19 @@ class BusinessLogic{
     function processDeleteProduct($productData){
         if (($result = $this->dh->deleteProduct($productData)) === false) {
             $this->error(400, [], "Bad Request - There was an error while deleting the product!");
+        }
+        $this->success(200, $result);
+    }
+
+    function processGetOrdersByUsername($username)
+    {
+        $this->success(200, $this->dh->getOrdersByUsername($username));
+        
+    }
+
+    function processUpdateUserStatus($userData){
+        if (($result = $this->dh->updateUserStatus($userData)) === false) {
+            $this->error(400, [], "Bad Request - There was an error while updating the user status!");
         }
         $this->success(200, $result);
     }

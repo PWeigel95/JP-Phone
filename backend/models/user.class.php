@@ -13,9 +13,10 @@ class User {
     public $zahlungsinformation_id;
     public $role_id;
     public $erstellungsdatum;
+    public $user_status;
 
     function __construct(/*$id,*/ $anrede, $vorname, $nachname, $adresse, $plz, $ort,$email,
-    $benutzername, $passwort, $zahlungsinformation_id, $role_id, $erstellungsdatum) {
+    $benutzername, $passwort, $zahlungsinformation_id, $role_id, $erstellungsdatum, $user_status) {
         //$this->id = $id;
         $this->anrede = $anrede;
         $this->vorname=$vorname;
@@ -29,6 +30,7 @@ class User {
         $this->zahlungsinformation_id=$zahlungsinformation_id;
         $this->role_id=$role_id;
         $this->erstellungsdatum=$erstellungsdatum;
+        $this->user_status=$user_status;
         
       }
 
