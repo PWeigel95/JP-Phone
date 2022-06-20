@@ -381,6 +381,7 @@ class Datahandler{
             $category_id = null;
         }
 
+
         $stmt->bind_param("sdssi", 
         $productData->produktName,
         $productData->produktPreis,
@@ -388,7 +389,54 @@ class Datahandler{
         $productData->produktFotoUrl,
         $category_id);
 
-        if($stmt->execute()){            
+        //$uploadDir = "uploads/tickets/";
+        
+        
+
+        if($stmt->execute()){
+
+
+            /*
+            $date = new Datetime();
+            $timestamp = $date->getTimestamp();
+            $file = $_FILES["file"];
+            $picname = explode(".", $file["name"]);
+            //Name der hochgeladenen Datei
+            $uploadFile = $uploadDir . $picname[0] . "_" . $timestamp . "." . end($picname);
+
+            $uploadext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+            list($width, $height) = getimagesize($file['tmp_name']);
+            //Definiere fixe Größen für das Thumbnail
+            $newwidth = 300;
+            $newheight = 300;
+    
+            //Erstelle temporäre Variablen für das Thumbnail und die geuploadete Datei
+            $thumb = imagecreatetruecolor($newwidth, $newheight);
+    
+            //Je nach Bildformat der Datei, soll die entsprechende "imagecreatefrom" Funktion ausgeführt werden
+            switch ($uploadext) {
+                case 'png':
+                    $source = imagecreatefrompng($file['tmp_name']);
+                    break;
+                case 'jpg':
+                case 'jpeg':
+                    $source = imagecreatefromjpeg($file['tmp_name']);
+                    break;
+                case 'gif':
+                    $source = imagecreatefromgif($file['tmp_name']);
+                    break;
+            }
+            // Ein neues Image mit den definierten Fixgrößen wird aus der geuploadeten Datei kopiert
+            imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+    
+            //Speichere das erstellte kopierte Bild in den Upload Folder mit den jeweiligen Namen
+            imagejpeg($thumb, $uploadFile);
+    
+            //Lösche die temporären Variablen
+            imagedestroy($thumb);
+            imagedestroy($source);*/
+            
             $stmt->close();
             //close the connection
             $db_obj->close();
@@ -458,6 +506,16 @@ class Datahandler{
         if (!$stmt) $this->handleError($db_obj);
 
         $stmt->bind_param("s", $userData->username);
+
+        if ($stmt->execute()) {
+
+            if ($stmt->fetch()) {
+
+                return true;
+            }
+            else return false;
+        }
+        $db_obj->close();
         
     }
 

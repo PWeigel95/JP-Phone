@@ -443,10 +443,7 @@ class BusinessLogic{
     }
     function processCheckIfUsernameIsAlreadyTaken($userData)
     {
-        if (($result = $this->dh->getUserByUsername($userData)) === false) {
-            $this->error(400, [], "Bad Request - There was an error getting all users");
-        }
-        $this->success(200, $result);   
+        $this->success(200, $this->dh->getUserByUsername($userData));
         
     }
 

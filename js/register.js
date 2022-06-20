@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    $("#registerErrorMessage").hide();
+
 
     $("#form_register").submit(function(event) {
 
@@ -26,13 +28,21 @@ $(document).ready(function() {
             email: email,
             benutzername: benutzername,
             passwort: passwort,
+            repeatpassword: repeatpassword,
             zahlungsinformation_id: zahlungsinformation_id
         };
 
-
-        if (checkIfUsernameIsAlreadyTaken(userData) && checkIfPasswordsAreMatching()) {
+        if (!checkIfUsernameIsAlreadyTaken(userData)) {
+            showUsernameAlreadyExistsError();
+        } else if (!checkIfPasswordsAreMatching(userData)) {
+            showPasswordsAreNotMatchingError();
+        } else {
             createUser(userData);
+
         }
+
+
+
     });
 
 
@@ -45,22 +55,26 @@ $(document).ready(function() {
             datatype: "json",
             url: API_PATH + "?action=checkIfUsernameIsAlreadyTaken",
             data: JSON.stringify(userData),
-            success: function() {
-                return true;
+            success: function(response) {
+                if (response == null) {
+                    return false;
+
+                } else return true;
+
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 console.log(JSON.stringify(xhr));
                 console.log("AJAX error: " + ajaxOptions + ' : ' + thrownError);
-                return false;
+
             },
 
         });
 
     }
 
-    function checkIfPasswordsAreMatching() {
+    function checkIfPasswordsAreMatching(userData) {
 
-        if (passwort != repeatpassword) {
+        if (userData.passwort != userData.repeatpassword) {
             $("#registerErrorRepeatPasswort").text("Passwort stimmen nicht überein");
             return false;
         } else return true;
@@ -84,6 +98,20 @@ $(document).ready(function() {
             },
 
         });
+
+    }
+
+
+    function showPasswordsAreNotMatchingError() {
+        $("#registerErrorMessage").show();
+        $("#registerErrorMessage").text("Passwörter stimmen nicht überein!");
+
+    }
+
+    function showUsernameAlreadyExistsError() {
+
+        $("#registerErrorMessage").show();
+        $("#registerErrorMessage").text("Benutzername existiert bereits!");
 
     }
 

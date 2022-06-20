@@ -91,6 +91,7 @@ $(document).ready(function() {
         let produktFotoUrl = $("#fileProduktFoto").val();
         let produktKategorie = $("#inputCategory").val();
 
+
         let produkt = {
             produktName: produktName,
             produktBeschreibung: produktBeschreibung,
@@ -105,7 +106,7 @@ $(document).ready(function() {
             dataType: "json", // We know we want JSON data
             data: JSON.stringify(produkt),
             success: function() {
-                alert("Produkt erstellt!");
+                alert("Produkt wurde erstellt!");
                 clearInputs();
 
             },
@@ -360,8 +361,6 @@ $(document).ready(function() {
         });
 
     }
-
-
 
 
 
