@@ -369,7 +369,7 @@ class Datahandler{
         $db_obj = $this->getDb();
 
         // run the query
-        $query = "SELECT `anrede`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `email`, `benutzername` FROM users ORDER BY `user_id` ";
+        $query = "SELECT `anrede`, `vorname`, `nachname`, `adresse`, `plz`, `ort`, `email`, `benutzername`,`role_id`  FROM users ORDER BY `user_id` ";
         $result = $db_obj->query($query);
         if (!$result) $this->handleError($db_obj);
 
