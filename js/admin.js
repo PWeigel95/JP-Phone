@@ -229,6 +229,7 @@ $(document).ready(function() {
             data: JSON.stringify(productData),
             success: function() {
                 alert("Produkt wurde gelöscht");
+                clearProducts();
                 getProducts();
 
             },
@@ -282,6 +283,8 @@ $(document).ready(function() {
             data: JSON.stringify(product),
             success: function() {
                 alert("Produkt wurde geupdated");
+                $("#editProduct").hide();
+                getProducts();
 
             },
             error: function(xhr, ajaxOptions, thrownError) {

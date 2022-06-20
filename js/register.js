@@ -56,10 +56,13 @@ $(document).ready(function() {
             url: API_PATH + "?action=checkIfUsernameIsAlreadyTaken",
             data: JSON.stringify(userData),
             success: function(response) {
-                if (response == null) {
+                if (response == false) {
                     return false;
 
-                } else return true;
+                } else {
+                    alert(response);
+                    return true;
+                }
 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -88,7 +91,7 @@ $(document).ready(function() {
             url: API_PATH + "?action=register",
             data: JSON.stringify(userData),
             success: function(data) {
-                alert(JSON.stringify(data));
+                alert("Registrierung war erfolgreich!")
                 location.href = "./login.html";
 
             },

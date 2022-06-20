@@ -501,7 +501,7 @@ class Datahandler{
 
         $db_obj = $this->getDb();
 
-        $sql = "SELECT 1 FROM users WHERE benutzername = ? ";
+        $sql = "SELECT 1 FROM `users` WHERE `benutzername` = ? ";
         $stmt = $db_obj->prepare($sql);
         if (!$stmt) $this->handleError($db_obj);
 

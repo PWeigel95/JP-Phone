@@ -21,13 +21,13 @@ function addBasketProduct(data) {
             select.append($(`<option value="${i}"${i === data.count ? " selected" : ""}>Anzahl: ${i}</option>`));
         }
     }
-    select.change(function (e) {
+    select.change(function(e) {
         const newCount = parseInt(e.target.value, 10);
         $.ajax({
             method: "post",
             url: API_PATH + "?action=setBasket&product_id=" + product.product_id + "&count=" + newCount,
             dataType: "json",
-            success: function (data) {
+            success: function(data) {
                 // log the products to the console and then set add them to the HTML:
                 console.log(data);
                 setBasket(data);
@@ -93,7 +93,7 @@ function setBasket(basket) {
     }
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
     setBasket(EMPTY_BASKET);
 
     // When document is ready
@@ -101,7 +101,7 @@ $(document).ready(function () {
         method: "get",
         url: API_PATH + "?resource=basket", // This calls the backend/index.php file (relative to the .html file)
         dataType: "json", // We know we want JSON data
-        success: function (data) {
+        success: function(data) {
             // log the products to the console and then set add them to the HTML:
             console.log(data);
             setBasket(data);
@@ -111,13 +111,14 @@ $(document).ready(function () {
         },
     });
 
-    $("#orderButton").click(function () {
+    $("#orderButton").click(function() {
         $.ajax({
             method: "post",
             url: API_PATH + "?action=checkout",
             dataType: "json",
-            success: function (data) {
+            success: function(data) {
                 if (data === "created") {
+                    alert("Bestellung wurde erfolgreich aufgegeben!");
                     window.location = "./myAccount.html";
                 } else {
                     console.log(data);
